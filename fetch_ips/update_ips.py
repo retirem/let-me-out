@@ -5,7 +5,6 @@ import subprocess
 from shutil import which
 from datetime import datetime
 
-# Check if update-ipsets is installed
 def tool_not_exists(name: str) -> bool:
     return which(name) is None
 
