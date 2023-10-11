@@ -13,7 +13,7 @@ def logging_time() -> str:
     return datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
 def configure_logging() -> None:
-    handlers = [logging.FileHandler(filename='fetch_ips.log'), logging.StreamHandler(stream=sys.stdout)]
+    handlers: list[logging.Handler] = [logging.FileHandler(filename='fetch_ips.log'), logging.StreamHandler(stream=sys.stdout)]
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
 def update_ipsets() -> None:
@@ -26,7 +26,7 @@ def update_ipsets() -> None:
 
 def aggregate_ipsets() -> None:
     # By default of running update-ipsets without root user, the ip sets are located in ~/ipsets folder with .ipset, .netset extensions
-    output_IPs: set[str] = []
+    output_IPs: set[str] = set()
 
     for file in os.listdir('~/ipsets'):
         if file.endswith('.ipset') or file.endswith('.netset'):
