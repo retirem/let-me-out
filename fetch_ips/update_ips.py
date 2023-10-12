@@ -49,7 +49,7 @@ def aggregate_ipsets() -> None:
         sys.exit(1)
 
     with open('aggregated_iplists.txt', 'w') as output:
-        output.writelines(output_IPs)
+        output.writelines(sorted(output_IPs))
 
 
 if __name__ == "__main__":

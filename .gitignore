@@ -1,2 +1,4 @@
+*.log
 */*.log
 .mypy_cache
+aggregated_iplists.txt
