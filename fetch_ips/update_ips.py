@@ -17,7 +17,7 @@ def configure_logging() -> None:
 
 def update_ipsets() -> None:
     # TODO Maybe BASE_DIR should be made fixed, by the script
-    update_ipsets_parameters: list[str] = ['--enable all']
+    update_ipsets_parameters: list[str] = ['--enable-all']
     logging.info('Executing update-ipsets with the following parameters: ' + ', '.join(update_ipsets_parameters))
     print('This can take a while...')
 
