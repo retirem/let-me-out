@@ -1,10 +1,9 @@
-import logging
-import sys
-import subprocess
-import os
+import logging, sys, os, pwd
 
+from subprocess import PIPE, run, CompletedProcess
 from shutil import which
 from datetime import datetime
+
 
 def tool_not_exists(name: str) -> bool:
     return which(name) is None
@@ -19,23 +18,34 @@ def configure_logging() -> None:
 def update_ipsets() -> None:
     # TODO Maybe BASE_DIR should be made fixed, by the script
     update_ipsets_parameters: list[str] = ['--enable all']
-    logging.info('Executing update-ipsets with the following parameters:' + ', '.join(update_ipsets_parameters))
+    logging.info('Executing update-ipsets with the following parameters: ' + ', '.join(update_ipsets_parameters))
     print('This can take a while...')
-    subprocess.run(['update-ipsets', *update_ipsets_parameters])
+
+    result: CompletedProcess = run(['update-ipsets', *update_ipsets_parameters], stderr=PIPE, universal_newlines=True)
+    if result.returncode != 0:
+        logging.error('An error happened during executing update-ipsets command: ' + str(result.stderr))
+        print('Exiting now...')
+        sys.exit(1)
+
     logging.info('Finished update-ipsets command. Updated ipsets can be found in the ~/ipsets folder, if the config file has not been modified.')
 
 def aggregate_ipsets() -> None:
     # By default of running update-ipsets without root user, the ip sets are located in ~/ipsets folder with .ipset, .netset extensions
     output_IPs: set[str] = set()
 
-    for file in os.listdir('~/ipsets'):
-        if file.endswith('.ipset') or file.endswith('.netset'):
-            with open(file, 'r') as opened_file:
-                IPs: list[str] = opened_file.readlines()
-                for IP in IPs:
-                    # There are comment lines starting with # in the files which are useless
-                    if not IP.startswith('#'):
-                        output_IPs.add(IP)                
+    try:
+        for file in os.listdir('/home/' + pwd.getpwuid(os.getuid()).pw_name + '/ipsets'):
+            if file.endswith('.ipset') or file.endswith('.netset'):
+                with open(file, 'r') as opened_file:
+                    IPs: list[str] = opened_file.readlines()
+                    for IP in IPs:
+                        # There are comment lines starting with # in the files which are useless
+                        if not IP.startswith('#'):
+                            output_IPs.add(IP)
+    except Exception as ex:
+        logging.error('Error during the aggregation of IP sets: ' + str(ex.args))
+        print('Exiting now...')
+        sys.exit(1)
 
     with open('aggregated_iplists.txt', 'w') as output:
         output.writelines(output_IPs)
@@ -43,7 +53,7 @@ def aggregate_ipsets() -> None:
 
 if __name__ == "__main__":
     configure_logging()
-    print('Starting ip fetching script...')
+    print('Starting IP fetching script...')
 
     logging.info('Checking for update-ipsets command availability...')
     if tool_not_exists('update-ipsets'):
