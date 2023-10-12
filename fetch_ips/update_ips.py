@@ -31,12 +31,13 @@ def update_ipsets() -> None:
 
 def aggregate_ipsets() -> None:
     # By default of running update-ipsets without root user, the ip sets are located in ~/ipsets folder with .ipset, .netset extensions
-    output_IPs: set[str] = set()
+    output_IPs: set(str) = set()
+    ipsets_directory: str = '/home/' + pwd.getpwuid(os.getuid()).pw_name + '/ipsets'
 
     try:
-        for file in os.listdir('/home/' + pwd.getpwuid(os.getuid()).pw_name + '/ipsets'):
-            if file.endswith('.ipset') or file.endswith('.netset'):
-                with open(file, 'r') as opened_file:
+        for file_name in os.listdir(ipsets_directory):
+            if file_name.endswith('.ipset') or file_name.endswith('.netset'):
+                with open(ipsets_directory + '/' + file_name, 'r') as opened_file:
                     IPs: list[str] = opened_file.readlines()
                     for IP in IPs:
                         # There are comment lines starting with # in the files which are useless
