@@ -31,11 +31,11 @@ def configure_logging() -> None:
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
 def update_ipsets(config_path: str) -> None:
-    update_ipsets_parameters: list[str] = ['--enable-all', '-f', config_path]
+    update_ipsets_parameters: list[str] = ['--enable-all', '--config', config_path]
     logging.info('Executing update-ipsets with the following parameters: ' + ', '.join(update_ipsets_parameters))
     print('This can take a while...')
 
-    result: CompletedProcess = run(['update-ipsets', ' '.join(update_ipsets_parameters)], stderr=PIPE, universal_newlines=True)
+    result: CompletedProcess = run(['update-ipsets', *update_ipsets_parameters], stderr=PIPE, universal_newlines=True)
     if result.returncode != 0:
         logging.error('An error happened during executing update-ipsets command: ' + str(result.stderr))
         print('Exiting now...')
