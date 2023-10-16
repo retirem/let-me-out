@@ -47,7 +47,7 @@ def update_ipsets(config_path: str) -> None:
     logging.info('Finished update-ipsets command. Updated ipsets can be found in the ~/ipsets folder, if the config file has not been modified.')
 
 def aggregate_ipsets(working_directory: str) -> None:
-    output_IPs: set(str) = set()
+    output_IPs: set[str] = set()
     ipsets_directory: str = working_directory + '/ipsets'
 
     try:
