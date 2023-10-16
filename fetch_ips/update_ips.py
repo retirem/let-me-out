@@ -15,10 +15,10 @@ def initialize_working_directory(directory: str) -> None:
         print('Exiting now...')
         sys.exit(1)
 
-def initialize_config_file(config_path: str) -> None:
+def initialize_config_file(working_directory: str, config_path: str) -> None:
     logging.info('Creating config file in working directory.')
     with open(config_path, 'w') as config_file:
-        config_file.write('BASE_DIR=' + config_path + '/ipsets\n')
+        config_file.write('BASE_DIR=' + working_directory + '/ipsets\n')
     logging.info('Config file created.')
 
 def configure_logging(working_directory: str) -> None:
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     configure_logging(working_directory=working_directory)
 
     config_path: str = working_directory + '/update-ipsets.conf'
-    initialize_config_file(config_path=config_path)
+    initialize_config_file(working_directory=working_directory, config_path=config_path)
 
     check_command_availability('update-ipsets')
 
