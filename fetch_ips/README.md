@@ -57,6 +57,8 @@ sudo mkdir -p /usr/var/run
 
 Created a Python script which using the `update-ipsets` command and extracts the blocked IP addresses into one `.txt` file.
 
+The script support Linux OSs only.
+
 Prerequisities:
 - `update-ipsets` is installed and in `$PATH`
 - Python3 is installed (and possibly in `$PATH`)
@@ -66,9 +68,9 @@ You can run the script by:
 python update_ips.py
 ```
 
-Output. The following files will be created:
-- `aggregated_iplists.txt` created in the working directory (`/home/USER_NAME/let-me-out`) with all the IPs from the blocklists, uniquely and sorted
-- `fetch_ips.log` log file (in the directory one start the script from) which contains all the actions taken by the script
+Output will be the following files in the working directory (`/home/USER_NAME/let-me-out`):
+- `aggregated_iplists.txt` with all the IPs from the blocklists, uniquely and sorted
+- `fetch_ips.log` log file which contains all the actions taken by the script
 
 ## Extract Danish IPs from the aggregated blocklist
 
