@@ -1,10 +1,6 @@
 import ipaddress, argparse, sys
 
 
-#TODOs:
-#   1. write the output to a file (.txt)
-#   2. logging ???
-
 
 def argument_parse():
     try:
@@ -97,15 +93,26 @@ def filtering(ip_addresses: list, subnets: list, networks: list):
                 if net.subnet_of(subnet):
                     matches.add((net, subnet))
 
-        ## Writing the results to the terminal.
-
         if matches:
-            # Uncomment the next to line to write the result to the terminal.
-            # for match in matches:
-            #     print(f"Danish: {match[0]}, network: {match[1]}")
-            
-            with open("filtered_ips_networks.txt", "w") as output:
-                output.write("\n".join(matches))
+
+            with open("blocked_ips_networks.txt", "w") as output:
+                for element in matches:
+                    output.write(str(element[0]) + "\n")
+
+            ## Writing the results to the terminal.
+            #for match in matches:
+            #    print(f"Danish: {match[0]}, network: {match[1]}")
+
+            ## Uncomment the next 3 lines to make a summarised list.
+            #with open("sum.txt", "w") as output:
+            #    for element in matches:
+            #        output.write(str(element[0])+ " , " +str(element[1]) + "\n")
+
+            ## Uncomment the next 3 lines to make a list of just the containing networks.
+            #with open("containing_network.txt", "w") as output:
+            #    for element in matches:
+            #        output.write(str(element[1]) + "\n")
+
         else:
             print("[+] No matching IP addresses within networks found.")
     except Exception as ex:
