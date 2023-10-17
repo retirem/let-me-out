@@ -1,6 +1,4 @@
-import ipaddress
-import argparse
-import sys
+import ipaddress, argparse, sys
 
 
 #TODOs:
@@ -100,9 +98,14 @@ def filtering(ip_addresses: list, subnets: list, networks: list):
                     matches.add((net, subnet))
 
         ## Writing the results to the terminal.
-        #if matches:
-        #    for match in matches:
-        #        print(f"Danish: {match[0]}, network: {match[1]}")
+
+        if matches:
+            # Uncomment the next to line to write the result to the terminal.
+            # for match in matches:
+            #     print(f"Danish: {match[0]}, network: {match[1]}")
+            
+            with open("filtered_ips_networks.txt", "w") as output:
+                output.write("\n".join(matches))
         else:
             print("[+] No matching IP addresses within networks found.")
     except Exception as ex:
