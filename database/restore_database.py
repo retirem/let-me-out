@@ -5,9 +5,6 @@ from argparse import ArgumentParser
 
 # Run this script to restore database from a specific backup file
 
-# TODO read path to .tar file
-
-
 def read_db_config(config_path: str) -> (str, str):
     config_parser: ConfigParser = ConfigParser()
     config_parser.read(config_path)
@@ -41,13 +38,8 @@ if __name__ == "__main__":
     (backup_path, config_path) = input_backup_path()
     (username, password) = read_db_config(config_path=config_path)
 
-
 # TODO read database config
 
 # TODO check DB availability/connect to DB
 
 # TODO run backup on DB
-
-
-
-
