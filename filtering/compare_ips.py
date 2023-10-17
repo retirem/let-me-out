@@ -7,7 +7,7 @@ def argument_parse():
         # Specify the arguments parsed from the command line
         parser = argparse.ArgumentParser(description='Filtering IPs and networks from File1 based on the networks specified in File2.')
         parser.add_argument('--blocklist', type=str, required=True, help='The .txt file containing the blocklisted IPs.')
-        parser.add_argument('--networks', type=str, required=True, help="The .txt file containing the chosen country's subnets")
+        parser.add_argument('--networks', type=str, required=True, help="The .txt file containing the chosen country's networks.")
         args = parser.parse_args()
         blocklist = args.blocklist
         networks = args.networks
