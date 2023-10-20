@@ -1,11 +1,3 @@
-import requests
-import json
-
-# Replace with your API
-api_key = 'YOUR_API_KEY'
-
-# List of IPs to check
-ips_to_check = ['91.240.189.0', '91.240.189.1'] 
 
 for ip in ips_to_check:
     url = f'https://ipqualityscore.com/api/json/ip/{api_key}/{ip}'
@@ -45,3 +37,10 @@ for ip in ips_to_check:
 
 
 # retrieves information about each IP, including whether it's a proxy, VPN, Tor exit node, or a bot, the risk score associated with the IP, and location information
+
+if __name__ == '__main__':
+    (ip_file_path, workdir): str = parse_arguments()
+    configure_logging(working_directory=workdir)
+    ips: list[str] = read_ips(filepath=ip_file_path)
+
+
