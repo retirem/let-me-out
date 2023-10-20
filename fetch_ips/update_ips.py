@@ -66,7 +66,7 @@ def aggregate_ipsets() -> None:
     try:
         for file_name in os.listdir(ipsets_directory):
             if file_name.endswith('.ipset') or file_name.endswith('.netset'):
-                with open(ipsets_directory + '/' + file_name, 'r') as opened_file:
+                with open(os.path.join(ipsets_directory, file_name), 'r') as opened_file:
                     IPs: list[str] = opened_file.readlines()
                     for IP in IPs:
                         # There are comment lines starting with # in the files which are useless
@@ -76,7 +76,7 @@ def aggregate_ipsets() -> None:
         logging.error('Error during the aggregation of IP sets: ' + str(ex.args))
         print('Exiting now...')
         sys.exit(1)
-    with open(working_directory + '/aggregated_iplists.txt', 'w') as output:
+    with open(os.path.join(working_directory, 'aggregated_iplists.txt'), 'w') as output:
         output.writelines(sorted(output_IPs))
 
 

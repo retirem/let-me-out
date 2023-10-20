@@ -1,25 +1,11 @@
-import ipaddress, argparse, sys
+import ipaddress, sys, os, shutil
 
 
-def argument_parse():
-    try:
-        # Specify the arguments parsed from the command line
-        parser = argparse.ArgumentParser(description='Filtering IPs and networks from File1 based on the networks specified in File2.')
-        parser.add_argument('--blocklist', type=str, required=True, help='The .txt file containing the blocklisted IPs.')
-        parser.add_argument('--networks', type=str, required=True, help="The .txt file containing the chosen country's networks.")
-        args = parser.parse_args()
-        blocklist = args.blocklist
-        networks = args.networks
-        print("[+] Opening the specified files ...")
-        return blocklist, networks
-    except Exception as ex:
-        print(ex)
-        sys.exit(1)
-
-def blocked_ips(filename: str):
+def blocked_ips():
+    blocklist_path: str = os.path.join(working_directory, 'aggregated_iplists.txt')
     try:
         # Read the blocklist .txt file and load it's content into a list.
-        with open(filename, "r") as file1:
+        with open(blocklist_path, "r") as file1:
             ips = file1.read().splitlines()
         ip_addresses = []
         blocked_networks = []
@@ -42,18 +28,22 @@ def blocked_ips(filename: str):
             print("[+] Blocklist loaded!")
             return ip_addresses, blocked_networks
         except Exception as ex:
-            print("[-] The IP addresses in " + filename +" are in a bad format.")
+            print("[-] The IP addresses in " + blocklist_path +" are in a bad format.")
             print(ex)
             sys.exit(1)
     except Exception as ex:
-        print("[-] Unable to open the "+ filename + " file.")
+        print("[-] Unable to open the "+ blocklist_path + " file.")
         print(ex)
         sys.exit(1)
 
-def danish_subnets(filename: str):
+def danish_subnets():
+    network_path: str = os.path.join(working_directory, 'danish_networks.txt')
+    if not os.path.exists(network_path):
+        shutil.copyfile('danish_networks.txt', network_path)
+
     try:
         # Read the networks .txt file.
-        with open(filename, "r") as file2:
+        with open(network_path, "r") as file2:
             subs = file2.read().splitlines()
         subnets = []
         try:
@@ -65,11 +55,11 @@ def danish_subnets(filename: str):
             print("[+] Networks loaded!")
             return subnets
         except Exception as ex:
-            print("[-] The networks in " + filename +" are in a bad format.")
+            print("[-] The networks in " + network_path +" are in a bad format.")
             print(ex)
             sys.exit(1)
     except Exception as ex:
-        print("[-] Unable to open the "+ filename + " file.")
+        print("[-] Unable to open the "+ network_path + " file.")
         print(ex)
         sys.exit(1)
 
@@ -90,7 +80,7 @@ def filtering(ip_addresses: list, subnets: list, networks: list):
 
         if matches:
 
-            with open("blocked_ips_networks.txt", "w") as output:
+            with open(os.path.join(working_directory, 'blocked_ips_networks.txt'), "w") as output:
                 for element in matches:
                     output.write(str(element[0]) + "\n")
 
@@ -117,11 +107,11 @@ def filtering(ip_addresses: list, subnets: list, networks: list):
 
 
 if __name__ == "__main__":
-
-    arguments = argument_parse()
+    global working_directory
+    working_directory = os.environ['LETMEOUT_WORKDIR']
 
     print("[+] Starting the script ... ")
 
-    blocked = blocked_ips(arguments[0])
-    subnets = danish_subnets(arguments[1])
+    blocked = blocked_ips()
+    subnets = danish_subnets()
     filtering(ip_addresses=blocked[0], subnets=subnets, networks=blocked[1])
