@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 
 def parse_arguments() -> str | None:
     parser: ArgumentParser = ArgumentParser()
-    parser.add_argument('-w', '--workdir', type=str, help='Working directory path.', required=False)
+    parser.add_argument('-w', '--workdir', type=str, help='Working directory path which all the scripts are going to use.', required=False)
     args = parser.parse_args()
     return args.workdir
 
@@ -23,15 +23,19 @@ def initialize_working_directory(directory: str) -> None:
             print('An error happened during creation of the working directory: ' + str(ex.args))
             print('Exiting now...')
             sys.exit(1)
+    os.environ['LETMEOUT_WORKDIR'] = directory
 
-def initialize_config_file(working_directory: str, config_path: str) -> None:
+    global working_directory
+    working_directory = directory
+
+def initialize_config_file(config_path: str) -> None:
     logging.info('Creating config file in working directory.')
     with open(config_path, 'w') as config_file:
-        config_file.write('BASE_DIR=' + working_directory + '/ipsets\n')
+        config_file.write('BASE_DIR=' + os.path.join(working_directory, 'ipsets'))
     logging.info('Config file created.')
 
-def configure_logging(working_directory: str) -> None:
-    log_path: str = working_directory + '/fetch_ips.log'
+def configure_logging() -> None:
+    log_path: str = os.path.join(working_directory, 'fetch_ips.log')
     handlers: list[logging.Handler] = [logging.FileHandler(filename=log_path), logging.StreamHandler(stream=sys.stdout)]
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
@@ -55,9 +59,9 @@ def update_ipsets(config_path: str) -> None:
 
     logging.info('Finished update-ipsets command. Updated ipsets can be found in the ~/ipsets folder, if the config file has not been modified.')
 
-def aggregate_ipsets(working_directory: str) -> None:
+def aggregate_ipsets() -> None:
     output_IPs: set[str] = set()
-    ipsets_directory: str = working_directory + '/ipsets'
+    ipsets_directory: str = os.path.join(working_directory, 'ipsets')
 
     try:
         for file_name in os.listdir(ipsets_directory):
@@ -72,7 +76,6 @@ def aggregate_ipsets(working_directory: str) -> None:
         logging.error('Error during the aggregation of IP sets: ' + str(ex.args))
         print('Exiting now...')
         sys.exit(1)
-
     with open(working_directory + '/aggregated_iplists.txt', 'w') as output:
         output.writelines(sorted(output_IPs))
 
@@ -81,17 +84,16 @@ if __name__ == "__main__":
     print('Starting IP fetching script...')
 
     workdir = parse_arguments()
-    working_directory = workdir if workdir is not None else '/home/' + pwd.getpwuid(os.getuid()).pw_name + '/let-me-out'
-    initialize_working_directory(directory=working_directory)
+    workdir = workdir if workdir is not None else os.path.join('/home', pwd.getpwuid(os.getuid()).pw_name, 'let-me-out')
+    initialize_working_directory(directory=workdir)
+    configure_logging()
 
-    configure_logging(working_directory=working_directory)
-
-    config_path: str = working_directory + '/update-ipsets.conf'
-    initialize_config_file(working_directory=working_directory, config_path=config_path)
+    config_path: str = os.path.join(working_directory, 'update-ipsets.conf')
+    initialize_config_file(config_path=config_path)
 
     check_command_availability('update-ipsets')
 
     update_ipsets(config_path=config_path)
-    aggregate_ipsets(working_directory=working_directory)
+    aggregate_ipsets()
 
     print('Exiting ip fetching script... Bye.')
