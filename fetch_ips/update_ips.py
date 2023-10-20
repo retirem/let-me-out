@@ -13,18 +13,27 @@ def parse_arguments() -> str | None:
     return args.workdir
 
 def initialize_working_directory(directory: str) -> None:
-    if os.path.exists(directory):
-        print('Using the provided working directory: ' + directory)
-    else:
+    print('Using the provided working directory: ' + directory)
+    if not os.path.exists(directory):
         try:
-            print('Trying to create working directory at: ' + directory)
+            print('Trying to create directory at: ' + directory)
             os.mkdir(directory)
-            print('Working directory successfully created.')
+            print('Directory successfully created.')
         except Exception as ex:
-            print('An error happened during creation of the working directory: ' + str(ex.args))
+            print('An error happened during creation of the directory: ' + str(ex.args))
             print('Exiting now...')
             sys.exit(1)
-    os.environ['LETMEOUT_WORKDIR'] = directory + '_' + datetime.now().date()
+    print('Creating working directory for today...')
+    work_dir: str = os.path.join(directory, str(datetime.now().date()))
+    try:
+        os.mkdir(work_dir)
+    except Exception as ex:
+        print('An error happened during creation of today\'s directory: ' + str(ex.args))
+        print('Exiting now...')
+        sys.exit(1)
+
+    os.environ['LETMEOUT_WORKDIR'] = work_dir
+    print('Setting working directory in env var LETMEOUT_WORKDIR.')
 
 def initialize_config_file(config_path: str) -> None:
     logging.info('Creating config file in working directory.')
