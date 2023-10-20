@@ -14,3 +14,5 @@ echo "Filtering done"
 python3 OSINTScripts/analyzing.py -w "../"
 
 echo "Maliciousness and quality tested. Results are in:"
+
+# Remember to give permission to bash script with; chmod -x mainBashScript.sh 
