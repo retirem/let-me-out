@@ -1,27 +1,20 @@
-import requests, sys, logging, json
+import requests, sys, logging, os
 
 from IP_Info import IP_Info
-from argparse import ArgumentParser
 
 
 virustotal_api_key = 'REPLACE_API_KEY'
 ipqualityscore_api_key = 'REPLACE_API_KEY'
 
-def configure_logging(working_directory: str) -> None:
-    log_path: str = working_directory + '/analyze.log'
+def configure_logging() -> None:
+    log_path: str = os.path.joing(working_directory, 'analyze.log')
     handlers: list[logging.Handler] = [logging.FileHandler(filename=log_path), logging.StreamHandler(stream=sys.stdout)]
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
-def parse_arguments() -> str:
-    parser: ArgumentParser = ArgumentParser()
-    parser.add_argument('-w', '--workdir', type=str, help='Working directory path.', required=True)
-    args = parser.parse_args()
-    return str(args.workdir)
-
-def read_ips(working_directory: str) -> list[IP_Info]:
-    filepath: str = working_directory + '/blocked_ips_networks.txt'
-    logging.info('Reading IPs from file: ' + filepath)
-    with open(filepath, 'r') as ip_file:
+def read_ips() -> list[IP_Info]:
+    ip_path: str = os.path.joing(working_directory, 'blocked_ips_networks.txt')
+    logging.info('Reading IPs from file: ' + ip_path)
+    with open(ip_path, 'r') as ip_file:
         return list(map(lambda read_ip: IP_Info(read_ip), map(lambda ip: ip.strip(), ip_file.readlines())))
 
 def virustotal(ips: list[IP_Info]) -> None:
@@ -81,8 +74,12 @@ def ipqualityscore(ips: list[IP_Info]) -> None:
 
 
 if __name__ == '__main__':
-    working_directory: str = parse_arguments()
-    configure_logging(working_directory=working_directory)
-    ips: list[IP_Info] = read_ips(working_directory=working_directory)
-    virustotal(working_directory=working_directory, ips=ips)
+    global working_directory
+    working_directory = os.environ['LETMEOUT_WORKDIR']
+
+    configure_logging()
+    ips: list[IP_Info] = read_ips()
+    virustotal(ips=ips)
     ipqualityscore(ips=ips)
+
+    # TODO Make IPs JSON searializable
