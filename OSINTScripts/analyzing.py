@@ -39,13 +39,15 @@ def virustotal(ips: list[IP_Info]) -> None:
             ip.ip = data.get('id')
             ip.network = data.get('attributes').get('network')
 
-            ip.virustotal['reputation'] = data.get('attributes').get('reputation')
-
             last_analysis_stats = data.get('attributes').get('last_analysis_stats')
-            ip.virustotal['harmless_count'] = last_analysis_stats.get('harmless')
-            ip.virustotal['suspicious_count'] = last_analysis_stats.get('suspicious')
-            ip.virustotal['malicious_count'] = last_analysis_stats.get('malicious')
-            ip.virustotal['undetected_count'] = last_analysis_stats.get('undetected')
+
+            ip.virustotal = {
+                'reputation': data.get('attributes').get('reputation'),
+                'harmless_count': last_analysis_stats.get('harmless'),
+                'suspicious_count': last_analysis_stats.get('suspicious'),
+                'malicious_count': last_analysis_stats.get('malicious'),
+                'undetected_count': last_analysis_stats.get('undetected'),
+            }
         else:
             logging.error(f'VirusTotal API response gave error for IP: {ip}, Status code: {response.status_code}')
 
@@ -61,17 +63,17 @@ def ipqualityscore(ips: list[IP_Info]) -> None:
         if response.status_code == 200:
             data = response.json()
 
-            ip.ipqualityscore['is_proxy'] = data.get('proxy')
-            ip.ipqualityscore['is_vpn'] = data.get('vpn')
-            ip.ipqualityscore['is_tor'] = data.get('tor')
-            ip.ipqualityscore['is_bot'] = data.get('is_bot')
-
-            ip.ipqualityscore['risk_score'] = data.get('risk_score')
-
-            ip.ipqualityscore['geolocation'] = {
-                'city': data.get('city'),
-                'region': data.get('region'),
-                'country': data.get('country')
+            ip.ipqualityscore = {
+                'is_proxy': data.get('proxy'),
+                'is_vpn': data.get('vpn'),
+                'is_tor': data.get('tor'),
+                'is_bot': data.get('is_bot'),
+                'risk_score': data.get('risk_score'),
+                'geolocation': {
+                    'city': data.get('city'),
+                    'region': data.get('region'),
+                    'country': data.get('country'),
+                },
             }
         else:
             logging.error(f'IPQualityScore API response gave error for IP: {ip}, Status code: {response.status_code}')
