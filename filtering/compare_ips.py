@@ -1,7 +1,6 @@
 import ipaddress, argparse, sys
 
 
-
 def argument_parse():
     try:
         # Specify the arguments parsed from the command line
@@ -51,8 +50,6 @@ def blocked_ips(filename: str):
         print(ex)
         sys.exit(1)
 
-
-
 def danish_subnets(filename: str):
     try:
         # Read the networks .txt file.
@@ -75,8 +72,6 @@ def danish_subnets(filename: str):
         print("[-] Unable to open the "+ filename + " file.")
         print(ex)
         sys.exit(1)
-
-
 
 def filtering(ip_addresses: list, subnets: list, networks: list):
     try:
