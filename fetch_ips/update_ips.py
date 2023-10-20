@@ -25,9 +25,6 @@ def initialize_working_directory(directory: str) -> None:
             sys.exit(1)
     os.environ['LETMEOUT_WORKDIR'] = directory
 
-    global working_directory
-    working_directory = directory
-
 def initialize_config_file(config_path: str) -> None:
     logging.info('Creating config file in working directory.')
     with open(config_path, 'w') as config_file:
@@ -86,6 +83,11 @@ if __name__ == "__main__":
     workdir = parse_arguments()
     workdir = workdir if workdir is not None else os.path.join('/home', pwd.getpwuid(os.getuid()).pw_name, 'let-me-out')
     initialize_working_directory(directory=workdir)
+
+    # Set it here to satisfy mypy, if the execution reaches this point the workdir is initialized
+    global working_directory
+    working_directory = workdir
+
     configure_logging()
 
     config_path: str = os.path.join(working_directory, 'update-ipsets.conf')
