@@ -87,5 +87,5 @@ if __name__ == '__main__':
     working_directory: str = parse_arguments()
     configure_logging(working_directory=working_directory)
     ips: list[IP_Info] = read_ips(working_directory=working_directory)
-    virustotal(ips=ips)
+    virustotal(working_directory=working_directory, ips=ips)
     ipqualityscore(ips=ips)
