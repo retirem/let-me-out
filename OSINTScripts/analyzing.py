@@ -26,7 +26,7 @@ def read_ips(working_directory: str) -> list[IP_Info]:
 
 def virustotal(working_directory: str, ips: list[IP_Info]) -> None:
     logging.info('Starting analyzing IPs with VirusTotal...')
-    with open(working_directory, 'w') as output:
+    with open(working_directory + '/output.txt', 'w') as output:
         headers = {'x-apikey': virustotal_api_key}
         for ip in ips:
             url: str = f'https://www.virustotal.com/api/v3/ip_addresses/{ip.ip}'
