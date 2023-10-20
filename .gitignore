@@ -3,3 +3,4 @@
 .mypy_cache
 aggregated_iplists.txt
 *.DS_Store
+update-ipsets.conf

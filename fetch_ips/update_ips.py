@@ -2,18 +2,27 @@ import logging, sys, os, pwd
 
 from subprocess import PIPE, run, CompletedProcess
 from shutil import which
-from datetime import datetime
+from argparse import ArgumentParser
 
+
+def parse_arguments() -> str | None:
+    parser: ArgumentParser = ArgumentParser()
+    parser.add_argument('-w', '--workdir', type=str, help='Working directory path.', required=False)
+    args = parser.parse_args()
+    return args.workdir
 
 def initialize_working_directory(directory: str) -> None:
-    try:
-        print('Trying to create working directory at: ' + directory)
-        os.mkdir(directory)
-        print('Working directory successfully created.')
-    except Exception as ex:
-        print('An error happened during creation of the working directory: ' + str(ex.args))
-        print('Exiting now...')
-        sys.exit(1)
+    if os.path.exists(directory):
+        print('Using the provided working directory: ' + directory)
+    else:
+        try:
+            print('Trying to create working directory at: ' + directory)
+            os.mkdir(directory)
+            print('Working directory successfully created.')
+        except Exception as ex:
+            print('An error happened during creation of the working directory: ' + str(ex.args))
+            print('Exiting now...')
+            sys.exit(1)
 
 def initialize_config_file(working_directory: str, config_path: str) -> None:
     logging.info('Creating config file in working directory.')
@@ -71,7 +80,8 @@ def aggregate_ipsets(working_directory: str) -> None:
 if __name__ == "__main__":
     print('Starting IP fetching script...')
 
-    working_directory: str = '/home/' + pwd.getpwuid(os.getuid()).pw_name + '/let-me-out'
+    workdir = parse_arguments()
+    working_directory = workdir if workdir is not None else '/home/' + pwd.getpwuid(os.getuid()).pw_name + '/let-me-out'
     initialize_working_directory(directory=working_directory)
 
     configure_logging(working_directory=working_directory)
