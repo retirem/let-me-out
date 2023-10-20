@@ -3,6 +3,7 @@ import logging, sys, os, pwd
 from subprocess import PIPE, run, CompletedProcess
 from shutil import which
 from argparse import ArgumentParser
+from datetime import datetime
 
 
 def parse_arguments() -> str | None:
@@ -23,7 +24,7 @@ def initialize_working_directory(directory: str) -> None:
             print('An error happened during creation of the working directory: ' + str(ex.args))
             print('Exiting now...')
             sys.exit(1)
-    os.environ['LETMEOUT_WORKDIR'] = directory
+    os.environ['LETMEOUT_WORKDIR'] = directory + '_' + datetime.now().date()
 
 def initialize_config_file(config_path: str) -> None:
     logging.info('Creating config file in working directory.')
