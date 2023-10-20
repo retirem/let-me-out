@@ -12,14 +12,14 @@ def configure_logging(working_directory: str) -> None:
     handlers: list[logging.Handler] = [logging.FileHandler(filename=log_path), logging.StreamHandler(stream=sys.stdout)]
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
-def parse_arguments() -> tuple[str, str]:
+def parse_arguments() -> str:
     parser: ArgumentParser = ArgumentParser()
-    parser.add_argument('-p', '--path', type=str, help='Path to file containing IPs.', required=True)
     parser.add_argument('-w', '--workdir', type=str, help='Working directory path.', required=True)
     args = parser.parse_args()
-    return (str(args.path), str(args.workdir))
+    return str(args.workdir)
 
-def read_ips(filepath: str) -> list[IP_Info]:
+def read_ips(working_directory: str) -> list[IP_Info]:
+    filepath: str = working_directory + '/blocked_ips_networks.txt'
     logging.info('Reading IPs from file: ' + filepath)
     with open(filepath, 'r') as ip_file:
         return list(map(lambda read_ip: IP_Info(read_ip), map(lambda ip: ip.strip(), ip_file.readlines())))
@@ -29,7 +29,7 @@ def virustotal(ips: list[IP_Info]) -> None:
 
     headers = {'x-apikey': virustotal_api_key}
     for ip in ips:
-        url: str = f'https://www.virustotal.com/api/v3/ip_addresses/{ip.ip_address}'
+        url: str = f'https://www.virustotal.com/api/v3/ip_addresses/{ip.ip}'
         response: requests.Response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
@@ -49,7 +49,7 @@ def virustotal(ips: list[IP_Info]) -> None:
                 'undetected_count': last_analysis_stats.get('undetected'),
             }
         else:
-            logging.error(f'VirusTotal API response gave error for IP: {ip}, Status code: {response.status_code}')
+            logging.error(f'VirusTotal API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
 
     logging.info('Finished analyzing IPs with VirusTotal.')
 
@@ -76,14 +76,15 @@ def ipqualityscore(ips: list[IP_Info]) -> None:
                 },
             }
         else:
-            logging.error(f'IPQualityScore API response gave error for IP: {ip}, Status code: {response.status_code}')
+            logging.error(f'IPQualityScore API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
 
     logging.info('Finished analyzing IPs with IPQualityScore.')
 
 
 if __name__ == '__main__':
-    (ip_file_path, workdir) = parse_arguments()
-    configure_logging(working_directory=workdir)
-    ips: list[IP_Info] = read_ips(filepath=ip_file_path)
+    working_directory: str = parse_arguments()
+    configure_logging(working_directory=working_directory)
+    ips: list[IP_Info] = read_ips(working_directory=working_directory)
     virustotal(ips=ips)
     ipqualityscore(ips=ips)
+
