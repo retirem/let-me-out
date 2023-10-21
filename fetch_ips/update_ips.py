@@ -12,7 +12,7 @@ def parse_arguments() -> str | None:
     args = parser.parse_args()
     return args.workdir
 
-def initialize_working_directory(directory: str) -> None:
+def initialize_working_directory(directory: str) -> str:
     print('Using the provided working directory: ' + directory)
     if not os.path.exists(directory):
         try:
@@ -34,6 +34,7 @@ def initialize_working_directory(directory: str) -> None:
 
     os.environ['LETMEOUT_WORKDIR'] = work_dir
     print('Setting working directory in env var LETMEOUT_WORKDIR.')
+    return work_dir
 
 def initialize_config_file(config_path: str) -> None:
     logging.info('Creating config file in working directory.')
@@ -92,11 +93,11 @@ if __name__ == "__main__":
 
     workdir = parse_arguments()
     workdir = workdir if workdir is not None else os.path.join('/home', pwd.getpwuid(os.getuid()).pw_name, 'let-me-out')
-    initialize_working_directory(directory=workdir)
+    todays_workdir: str = initialize_working_directory(directory=workdir)
 
     # Set it here to satisfy mypy, if the execution reaches this point the workdir is initialized
     global working_directory
-    working_directory = workdir
+    working_directory = todays_workdir
 
     configure_logging()
 
