@@ -36,7 +36,7 @@ def initialize_working_directory(directory: str) -> str:
     print('Setting working directory in script.conf file.')
     config_parser: ConfigParser = ConfigParser()
     config_parser.read('../script.conf')
-    config_parser.set('CONFIGS', 'WORKDIR', work_dir)
+    config_parser.set('CONFIGS', 'workdir', work_dir)
     with open('../script.conf', 'w') as config_file:
         config_parser.write(config_file)
     print('Working directory set in script.conf file.')

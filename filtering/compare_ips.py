@@ -6,7 +6,7 @@ from configparser import ConfigParser
 def get_workdir_conf() -> str:
     config_parser: ConfigParser = ConfigParser()
     config_parser.read('../script.conf')
-    return config_parser.get('CONFIGS', 'WORKDIR')
+    return config_parser.get('CONFIGS', 'workdir')
 
 def blocked_ips():
     blocklist_path: str = os.path.join(working_directory, 'aggregated_iplists.txt')

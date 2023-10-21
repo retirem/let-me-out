@@ -7,9 +7,9 @@ from configparser import ConfigParser
 def get_conf() -> tuple[str, str, str]:
     config_parser: ConfigParser = ConfigParser()
     config_parser.read('../script.conf')
-    return (config_parser.get('CONFIGS', 'WORKDIR'),
-            config_parser.get('CONFIGS', 'VIRUSTOTAL_API'),
-            config_parser.get('CONFIGS', 'IPQUALITYSCORE_API'))
+    return (config_parser.get('CONFIGS', 'workdir'),
+            config_parser.get('CONFIGS', 'virustotal_api'),
+            config_parser.get('CONFIGS', 'ipqualityscore_api'))
 
 def configure_logging() -> None:
     log_path: str = os.path.join(working_directory, 'analyze.log')
