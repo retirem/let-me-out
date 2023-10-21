@@ -45,11 +45,11 @@ def blocked_ips():
         sys.exit(1)
 
 def danish_subnets():
-    nework_path: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'danish_networks.txt')
+    network_path: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'danish_networks.txt')
 
     try:
         # Read the networks .txt file.
-        with open(nework_path, "r") as file2:
+        with open(network_path, "r") as file2:
             subs = file2.read().splitlines()
         subnets = []
         try:
@@ -61,11 +61,11 @@ def danish_subnets():
             print("[+] Networks loaded!")
             return subnets
         except Exception as ex:
-            print("[-] The networks in " + nework_path +" are in a bad format.")
+            print("[-] The networks in " + network_path +" are in a bad format.")
             print(ex)
             sys.exit(1)
     except Exception as ex:
-        print("[-] Unable to open the "+ nework_path + " file.")
+        print("[-] Unable to open the "+ network_path + " file.")
         print(ex)
         sys.exit(1)
 
