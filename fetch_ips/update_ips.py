@@ -7,11 +7,11 @@ from datetime import datetime
 from configparser import ConfigParser
 
 
-def parse_arguments() -> str | None:
+def parse_arguments() -> str:
     parser: ArgumentParser = ArgumentParser()
-    parser.add_argument('-w', '--workdir', type=str, help='Working directory path which all the scripts are going to use.', required=False)
+    parser.add_argument('-w', '--workdir', type=str, help='Working directory path which all the scripts are going to use.', required=True)
     args = parser.parse_args()
-    return args.workdir
+    return str(args.workdir)
 
 def initialize_working_directory(directory: str) -> str:
     print('Using the provided working directory: ' + directory)
@@ -100,7 +100,6 @@ if __name__ == "__main__":
     print('Starting IP fetching script...')
 
     workdir = parse_arguments()
-    workdir = workdir if workdir is not None else os.path.join('/home', pwd.getpwuid(os.getuid()).pw_name, 'let-me-out')
     todays_workdir: str = initialize_working_directory(directory=workdir)
 
     # Set it here to satisfy mypy, if the execution reaches this point the workdir is initialized

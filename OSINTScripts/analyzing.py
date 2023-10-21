@@ -1,10 +1,15 @@
 import requests, sys, logging, os
 
 from IP_Info import IP_Info
+from configparser import ConfigParser
 
 
-virustotal_api_key = 'REPLACE_API_KEY'
-ipqualityscore_api_key = 'REPLACE_API_KEY'
+def get_conf() -> tuple[str, str, str]:
+    config_parser: ConfigParser = ConfigParser()
+    config_parser.read('../script.conf')
+    return (config_parser.get('CONFIGS', 'WORKDIR'),
+            config_parser.get('CONFIGS', 'VIRUSTOTAL_API'),
+            config_parser.get('CONFIGS', 'IPQUALITYSCORE_API'))
 
 def configure_logging() -> None:
     log_path: str = os.path.join(working_directory, 'analyze.log')
@@ -74,8 +79,8 @@ def ipqualityscore(ips: list[IP_Info]) -> None:
 
 
 if __name__ == '__main__':
-    global working_directory
-    working_directory = os.environ['LETMEOUT_WORKDIR']
+    global working_directory, virustotal_api_key, ipqualityscore_api_key
+    (working_directory, virstotal_api_key, ipqualityscore_api_key) = get_conf()
 
     configure_logging()
     ips: list[IP_Info] = read_ips()
