@@ -32,17 +32,17 @@ def initialize_working_directory(directory: str) -> str:
 
     print('Setting working directory in script.conf file.')
     config_parser.set('CONFIGS', 'workdir_todays', todays_workdir)
-    with open('../script.conf', 'w') as config_file:
+    with open(conf_path, 'w') as config_file:
         config_parser.write(config_file)
     print('Working directory set in script.conf file.')
 
     return todays_workdir
 
-def initialize_config_file(config_path: str) -> None:
+def initialize_config_file(ipsets_config_path: str) -> None:
     logging.info('Creating config file in working directory.')
     # This format is required for update-ipsets command
-    with open(config_path, 'w') as config_file:
-        config_file.write('BASE_DIR=' + os.path.join(working_directory, 'ipsets'))
+    with open(ipsets_config_path, 'w') as ipsets_config_file:
+        ipsets_config_file.write('BASE_DIR=' + os.path.join(working_directory, 'ipsets'))
     logging.info('Config file created.')
 
 def configure_logging() -> None:
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     configure_logging()
 
     config_path: str = os.path.join(working_directory, 'update-ipsets.conf')
-    initialize_config_file(config_path=config_path)
+    initialize_config_file(ipsets_config_path=config_path)
 
     check_command_availability('update-ipsets')
 
