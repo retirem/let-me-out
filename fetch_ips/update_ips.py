@@ -4,6 +4,7 @@ from subprocess import PIPE, run, CompletedProcess
 from shutil import which
 from argparse import ArgumentParser
 from datetime import datetime
+from configparser import ConfigParser
 
 
 def parse_arguments() -> str | None:
@@ -32,8 +33,14 @@ def initialize_working_directory(directory: str) -> str:
         print('Exiting now...')
         sys.exit(1)
 
-    os.environ['LETMEOUT_WORKDIR'] = work_dir
-    print('Setting working directory in env var LETMEOUT_WORKDIR.')
+    print('Setting working directory in script.conf file.')
+    config_parser: ConfigParser = ConfigParser()
+    config_parser.read('../script.conf')
+    config_parser.set('CONFIGS', 'WORKDIR', work_dir)
+    with open('../script.conf', 'w') as config_file:
+        config_parser.write(config_file)
+    print('Working directory set in script.conf file.')
+
     return work_dir
 
 def initialize_config_file(config_path: str) -> None:
