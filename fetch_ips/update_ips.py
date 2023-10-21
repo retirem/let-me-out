@@ -6,8 +6,9 @@ from datetime import datetime
 from configparser import ConfigParser
 
 
+conf_path: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../script.conf')
 config_parser: ConfigParser = ConfigParser()
-config_parser.read('../script.conf')
+config_parser.read(conf_path)
 
 def initialize_working_directory(directory: str) -> str:
     print('Using the provided working directory: ' + directory)
