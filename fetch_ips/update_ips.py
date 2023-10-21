@@ -38,6 +38,7 @@ def initialize_working_directory(directory: str) -> str:
 
 def initialize_config_file(config_path: str) -> None:
     logging.info('Creating config file in working directory.')
+    # This format is required for update-ipsets command
     with open(config_path, 'w') as config_file:
         config_file.write('BASE_DIR=' + os.path.join(working_directory, 'ipsets'))
     logging.info('Config file created.')
