@@ -81,7 +81,7 @@ def ipqualityscore(ips: list[IP_Info]) -> None:
 
 if __name__ == '__main__':
     global working_directory, virustotal_api_key, ipqualityscore_api_key
-    (working_directory, virstotal_api_key, ipqualityscore_api_key) = get_conf()
+    (working_directory, virustotal_api_key, ipqualityscore_api_key) = get_conf()
 
     configure_logging()
     ips: list[IP_Info] = read_ips()
