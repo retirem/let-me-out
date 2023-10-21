@@ -7,7 +7,7 @@ from configparser import ConfigParser
 def get_conf() -> tuple[str, str, str]:
     config_parser: ConfigParser = ConfigParser()
     config_parser.read('../script.conf')
-    return (config_parser.get('CONFIGS', 'workdir'),
+    return (config_parser.get('CONFIGS', 'workdir_todays'),
             config_parser.get('CONFIGS', 'virustotal_api'),
             config_parser.get('CONFIGS', 'ipqualityscore_api'))
 

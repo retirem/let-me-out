@@ -1,17 +1,13 @@
-import logging, sys, os, pwd
+import logging, sys, os
 
 from subprocess import PIPE, run, CompletedProcess
 from shutil import which
-from argparse import ArgumentParser
 from datetime import datetime
 from configparser import ConfigParser
 
 
-def parse_arguments() -> str:
-    parser: ArgumentParser = ArgumentParser()
-    parser.add_argument('-w', '--workdir', type=str, help='Working directory path which all the scripts are going to use.', required=True)
-    args = parser.parse_args()
-    return str(args.workdir)
+config_parser: ConfigParser = ConfigParser()
+config_parser.read('../script.conf')
 
 def initialize_working_directory(directory: str) -> str:
     print('Using the provided working directory: ' + directory)
@@ -25,23 +21,21 @@ def initialize_working_directory(directory: str) -> str:
             print('Exiting now...')
             sys.exit(1)
     print('Creating working directory for today...')
-    work_dir: str = os.path.join(directory, str(datetime.now().date()))
+    todays_workdir: str = os.path.join(directory, str(datetime.now().date()))
     try:
-        os.mkdir(work_dir)
+        os.mkdir(todays_workdir)
     except Exception as ex:
         print('An error happened during creation of today\'s directory: ' + str(ex.args))
         print('Exiting now...')
         sys.exit(1)
 
     print('Setting working directory in script.conf file.')
-    config_parser: ConfigParser = ConfigParser()
-    config_parser.read('../script.conf')
-    config_parser.set('CONFIGS', 'workdir', work_dir)
+    config_parser.set('CONFIGS', 'workdir_todays', todays_workdir)
     with open('../script.conf', 'w') as config_file:
         config_parser.write(config_file)
     print('Working directory set in script.conf file.')
 
-    return work_dir
+    return todays_workdir
 
 def initialize_config_file(config_path: str) -> None:
     logging.info('Creating config file in working directory.')
@@ -99,7 +93,7 @@ def aggregate_ipsets() -> None:
 if __name__ == "__main__":
     print('Starting IP fetching script...')
 
-    workdir = parse_arguments()
+    workdir = config_parser.get('CONFIGS', 'workdir')
     todays_workdir: str = initialize_working_directory(directory=workdir)
 
     # Set it here to satisfy mypy, if the execution reaches this point the workdir is initialized
