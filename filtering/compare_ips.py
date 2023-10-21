@@ -1,5 +1,12 @@
 import ipaddress, sys, os, shutil
 
+from configparser import ConfigParser
+
+
+def get_workdir_conf() -> str:
+    config_parser: ConfigParser = ConfigParser()
+    config_parser.read('../script.conf')
+    return config_parser.get('CONFIGS', 'WORKDIR')
 
 def blocked_ips():
     blocklist_path: str = os.path.join(working_directory, 'aggregated_iplists.txt')
@@ -108,7 +115,7 @@ def filtering(ip_addresses: list, subnets: list, networks: list):
 
 if __name__ == "__main__":
     global working_directory
-    working_directory = os.environ['LETMEOUT_WORKDIR']
+    working_directory = get_workdir_conf()
 
     print("[+] Starting the script ... ")
 
