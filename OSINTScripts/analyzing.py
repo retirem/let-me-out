@@ -1,6 +1,7 @@
 import requests, sys, logging, os, json
 
 from IP_Info import IP_Info
+from api_handler import APIHandler
 from configparser import ConfigParser
 
 
@@ -9,8 +10,8 @@ def get_conf() -> tuple[str, str, str]:
     config_parser: ConfigParser = ConfigParser()
     config_parser.read(conf_path)
     return (config_parser.get('CONFIGS', 'workdir_todays'),
-            config_parser.get('CONFIGS', 'virustotal_api'),
-            config_parser.get('CONFIGS', 'ipqualityscore_api'))
+            config_parser.get('CONFIGS', 'virustotal_api').split(','),
+            config_parser.get('CONFIGS', 'ipqualityscore_api').split(','))
 
 def configure_logging() -> None:
     log_path: str = os.path.join(working_directory, 'analyze.log')
@@ -25,7 +26,7 @@ def read_ips() -> list[IP_Info]:
 
 def virustotal(ips: list[IP_Info]) -> None:
     logging.info('Starting analyzing IPs with VirusTotal...')
-    headers = {'x-apikey': virustotal_api_key}
+    headers = {'x-apikey': api_handler.get_virustotal_key()}
     for ip in ips:
         url: str = f'https://www.virustotal.com/api/v3/ip_addresses/{ip.ip}'
         response: requests.Response = requests.get(url, headers=headers)
@@ -52,7 +53,7 @@ def ipqualityscore(ips: list[IP_Info]) -> None:
     logging.info('Starting analyzing IPs with IPQualityScore...')
 
     for ip in ips:
-        url: str = f'https://ipqualityscore.com/api/json/ip/{ipqualityscore_api_key}/{ip}'
+        url: str = f'https://ipqualityscore.com/api/json/ip/{api_handler.get_ipqualityscore_key()}/{ip}'
         response: requests.Response = requests.get(url)
 
         if response.status_code == 200:
@@ -83,8 +84,9 @@ def export_analyzed_ips(ips: list[IP_Info]) -> None:
 
 
 if __name__ == '__main__':
-    global working_directory, virustotal_api_key, ipqualityscore_api_key
-    (working_directory, virustotal_api_key, ipqualityscore_api_key) = get_conf()
+    global working_directory, api_handler
+    (working_directory, virustotal_api_keys, ipqualityscore_api_keys) = get_conf()
+    api_handler = APIHandler(virustotal_keys=virustotal_api_keys, ipqualityscore_keys=ipqualityscore_api_keys)
 
     configure_logging()
     ips: list[IP_Info] = read_ips()
