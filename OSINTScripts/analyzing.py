@@ -1,4 +1,4 @@
-import requests, sys, logging, os
+import requests, sys, logging, os, json
 
 from IP_Info import IP_Info
 from configparser import ConfigParser
@@ -31,14 +31,11 @@ def virustotal(ips: list[IP_Info]) -> None:
         response: requests.Response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
-            data = response.json()
-            data = data.get('data')
+            data = response.json().get('data')
 
-            ip.ip = data.get('id')
             ip.network = data.get('attributes').get('network')
 
             last_analysis_stats = data.get('attributes').get('last_analysis_stats')
-
             ip.virustotal = {
                 'reputation': data.get('attributes').get('reputation'),
                 'harmless_count': last_analysis_stats.get('harmless'),
@@ -78,6 +75,12 @@ def ipqualityscore(ips: list[IP_Info]) -> None:
 
     logging.info('Finished analyzing IPs with IPQualityScore.')
 
+def export_analyzed_ips(ips: list[IP_Info]) -> None:
+    analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.json')
+    with open(analyzed_path, 'w') as output_file:
+        json.dump([ip.__dict__ for ip in ips], output_file, indent=4)
+    logging.info('Created JSON file with analyzed IPs at: ' + analyzed_path)
+
 
 if __name__ == '__main__':
     global working_directory, virustotal_api_key, ipqualityscore_api_key
@@ -88,4 +91,4 @@ if __name__ == '__main__':
     virustotal(ips=ips)
     ipqualityscore(ips=ips)
 
-    # TODO Make IPs JSON searializable
+    export_analyzed_ips(ips=ips)

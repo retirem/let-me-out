@@ -1,4 +1,4 @@
-import ipaddress, sys, os, shutil
+import ipaddress, sys, os
 
 from configparser import ConfigParser
 
