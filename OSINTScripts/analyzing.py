@@ -3,6 +3,7 @@ import requests, sys, logging, os, json
 from IP_Info import IP_Info
 from api_handler import APIHandler
 from configparser import ConfigParser
+from database.import_ips import ips_to_db
 
 
 def get_conf() -> tuple[str, str, str]:
@@ -94,3 +95,5 @@ if __name__ == '__main__':
     ipqualityscore(ips=ips)
 
     export_analyzed_ips(ips=ips)
+
+    ips_to_db(ips=ips)
