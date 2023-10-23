@@ -1,7 +1,7 @@
 import os, psycopg2
 
+from IP_Info import IP_Info
 from configparser import ConfigParser
-from OSINTScripts.IP_Info import IP_Info
 
 
 def get_conf() -> tuple[str, str, str]:

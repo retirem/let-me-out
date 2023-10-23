@@ -6,7 +6,7 @@ from configparser import ConfigParser
 from database.import_ips import ips_to_db
 
 
-def get_conf() -> tuple[str, str, str]:
+def get_conf() -> tuple[str, list[str], list[str]]:
     conf_path: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../script.conf')
     config_parser: ConfigParser = ConfigParser()
     config_parser.read(conf_path)
@@ -95,5 +95,4 @@ if __name__ == '__main__':
     ipqualityscore(ips=ips)
 
     export_analyzed_ips(ips=ips)
-
     ips_to_db(ips=ips)
