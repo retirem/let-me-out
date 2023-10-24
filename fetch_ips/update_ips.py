@@ -2,7 +2,7 @@ import logging, sys, os
 
 from subprocess import PIPE, run, CompletedProcess
 from shutil import which
-from datetime import datetime
+from datetime import date
 from configparser import ConfigParser
 
 
@@ -22,7 +22,7 @@ def initialize_working_directory(directory: str) -> str:
             print('Exiting now...')
             sys.exit(1)
     print('Creating working directory for today...')
-    todays_workdir: str = os.path.join(directory, str(datetime.now().date()))
+    todays_workdir: str = os.path.join(directory, str(date.today()))
     try:
         os.mkdir(todays_workdir)
     except Exception as ex:
