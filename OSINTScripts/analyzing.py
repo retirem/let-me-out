@@ -10,8 +10,8 @@ def get_conf() -> tuple[str, str, str]:
     config_parser: ConfigParser = ConfigParser()
     config_parser.read(conf_path)
     return (config_parser.get('CONFIGS', 'workdir_todays'),
-            config_parser.get('CONFIGS', 'virustotal_api').split(','),
-            config_parser.get('CONFIGS', 'ipqualityscore_api').split(','))
+            config_parser.get('CONFIGS', 'virustotal_api_keys').split(','),
+            config_parser.get('CONFIGS', 'abuseIPDB_api_keys').split(','))
 
 def configure_logging() -> None:
     log_path: str = os.path.join(working_directory, 'analyze.log')
@@ -49,32 +49,66 @@ def virustotal(ips: list[IP_Info]) -> None:
 
     logging.info('Finished analyzing IPs with VirusTotal.')
 
-def ipqualityscore(ips: list[IP_Info]) -> None:
-    logging.info('Starting analyzing IPs with IPQualityScore...')
+# def abuseIPDBscore(ips: list[IP_Info]) -> None:
+#     logging.info('Starting analyzing IPs with abuseIPDBscore...')
+
+#     for ip in ips:
+#         url: str = f'https://abuseIPDBscore.com/api/json/ip/{api_handler.get_abuseIPDBscore_key()}/{ip}'
+#         response: requests.Response = requests.get(url)
+
+#         if response.status_code == 200:
+#             data = response.json()
+
+#             ip.abuseIPDBscore = {
+#                 'is_proxy': data.get('proxy'),
+#                 'is_vpn': data.get('vpn'),
+#                 'is_tor': data.get('tor'),
+#                 'is_bot': data.get('is_bot'),
+#                 'risk_score': data.get('risk_score'),
+#                 'geolocation': {
+#                     'city': data.get('city'),
+#                     'region': data.get('region'),
+#                     'country': data.get('country'),
+#                 },
+#             }
+#         else:
+#             logging.error(f'abuseIPDBscore API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
+
+#     logging.info('Finished analyzing IPs with abuseIPDBscore.')
+
+def abuseipdb(ips):
+    logging.info('Starting analyzing IPs with AbuseIPDB...')
+
+    # Define your AbuseIPDB API key
+    abuseipdb_api_key = api_handler.get_abuseIPDB_key()
 
     for ip in ips:
-        url: str = f'https://ipqualityscore.com/api/json/ip/{api_handler.get_ipqualityscore_key()}/{ip}'
-        response: requests.Response = requests.get(url)
+        url = f'https://api.abuseipdb.com/api/v2/check?ipAddress={ip}&maxAgeInDays=30'
+
+        # Set up headers with your API key
+        headers = {
+            'Key': abuseipdb_api_key,
+        }
+
+        response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
             data = response.json()
-
-            ip.ipqualityscore = {
-                'is_proxy': data.get('proxy'),
-                'is_vpn': data.get('vpn'),
-                'is_tor': data.get('tor'),
-                'is_bot': data.get('is_bot'),
-                'risk_score': data.get('risk_score'),
-                'geolocation': {
-                    'city': data.get('city'),
-                    'region': data.get('region'),
-                    'country': data.get('country'),
-                },
-            }
+            if data.get('data'):
+                # Access the data in the response (e.g., the abuse confidence score)
+                confidence_score = data['data']['abuseConfidenceScore']
+                categories = data['data']['categories']
+                # Add the AbuseIPDB data to the IP_Info object
+                ip.abuseipdb = {
+                    'confidence_score': confidence_score,
+                    'categories': categories
+                }
+            else:
+                logging.warning(f'No AbuseIPDB data available for IP: {ip}')
         else:
-            logging.error(f'IPQualityScore API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
+            logging.error(f'AbuseIPDB API response gave error for IP: {ip}, Status code: {response.status_code}')
 
-    logging.info('Finished analyzing IPs with IPQualityScore.')
+    logging.info('Finished analyzing IPs with AbuseIPDB.')
 
 def export_analyzed_ips(ips: list[IP_Info]) -> None:
     analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.json')
@@ -85,12 +119,12 @@ def export_analyzed_ips(ips: list[IP_Info]) -> None:
 
 if __name__ == '__main__':
     global working_directory, api_handler
-    (working_directory, virustotal_api_keys, ipqualityscore_api_keys) = get_conf()
-    api_handler = APIHandler(virustotal_keys=virustotal_api_keys, ipqualityscore_keys=ipqualityscore_api_keys)
+    (working_directory, virustotal_api_keys, abuseIPDB_api_keys) = get_conf()
+    api_handler = APIHandler(virustotal_keys=virustotal_api_keys, abuseIPDB_keys=abuseIPDB_api_keys)
 
     configure_logging()
     ips: list[IP_Info] = read_ips()
     virustotal(ips=ips)
-    ipqualityscore(ips=ips)
+    abuseIPDBscore(ips=ips)
 
     export_analyzed_ips(ips=ips)
