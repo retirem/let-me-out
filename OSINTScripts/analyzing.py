@@ -49,66 +49,47 @@ def virustotal(ips: list[IP_Info]) -> None:
 
     logging.info('Finished analyzing IPs with VirusTotal.')
 
-# def abuseIPDBscore(ips: list[IP_Info]) -> None:
-#     logging.info('Starting analyzing IPs with abuseIPDBscore...')
-
-#     for ip in ips:
-#         url: str = f'https://abuseIPDBscore.com/api/json/ip/{api_handler.get_abuseIPDBscore_key()}/{ip}'
-#         response: requests.Response = requests.get(url)
-
-#         if response.status_code == 200:
-#             data = response.json()
-
-#             ip.abuseIPDBscore = {
-#                 'is_proxy': data.get('proxy'),
-#                 'is_vpn': data.get('vpn'),
-#                 'is_tor': data.get('tor'),
-#                 'is_bot': data.get('is_bot'),
-#                 'risk_score': data.get('risk_score'),
-#                 'geolocation': {
-#                     'city': data.get('city'),
-#                     'region': data.get('region'),
-#                     'country': data.get('country'),
-#                 },
-#             }
-#         else:
-#             logging.error(f'abuseIPDBscore API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
-
-#     logging.info('Finished analyzing IPs with abuseIPDBscore.')
-
 def abuseipdb(ips):
     logging.info('Starting analyzing IPs with AbuseIPDB...')
 
     # Define your AbuseIPDB API key
     abuseipdb_api_key = api_handler.get_abuseIPDB_key()
 
+    results = []  # Create a list to store the results as JSON objects
+
     for ip in ips:
-        url = f'https://api.abuseipdb.com/api/v2/check?ipAddress={ip}&maxAgeInDays=30'
+        url = f'https://api.abuseipdb.com/api/v2/check?ipAddress={ip.ip}&maxAgeInDays=365'
 
         # Set up headers with your API key
         headers = {
+            'Accept': 'application/json',
             'Key': abuseipdb_api_key,
         }
 
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
-            data = response.json()
-            if data.get('data'):
-                # Access the data in the response (e.g., the abuse confidence score)
-                confidence_score = data['data']['abuseConfidenceScore']
-                categories = data['data']['categories']
-                # Add the AbuseIPDB data to the IP_Info object
-                ip.abuseipdb = {
-                    'confidence_score': confidence_score,
-                    'categories': categories
+            data = response.json().get('data')
+            if data:
+                # Create a JSON structure to store the information
+                ip_info = {
+                    'ip': ip.ip,
+                    'abuseConfidenceScore': data.get('abuseConfidenceScore'),
                 }
-            else:
-                logging.warning(f'No AbuseIPDB data available for IP: {ip}')
-        else:
-            logging.error(f'AbuseIPDB API response gave error for IP: {ip}, Status code: {response.status_code}')
 
-    logging.info('Finished analyzing IPs with AbuseIPDB.')
+                # Attempt to access the 'categories' field safely
+                categories = data.get('categories')
+                if categories:
+                    ip_info['categories'] = categories
+
+                results.append(ip_info)  # Append the JSON object to the results list
+                print(results)
+
+            else:
+                logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
+        else:
+            logging.error(f'AbuseIPDB API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
+
 
 def export_analyzed_ips(ips: list[IP_Info]) -> None:
     analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.json')
@@ -125,6 +106,6 @@ if __name__ == '__main__':
     configure_logging()
     ips: list[IP_Info] = read_ips()
     virustotal(ips=ips)
-    abuseIPDBscore(ips=ips)
+    abuseipdb(ips=ips)
 
     export_analyzed_ips(ips=ips)
