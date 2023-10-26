@@ -103,7 +103,6 @@ def abuseipdb(ips):
                     }
 
                 results.append(ip_info)  # Append the JSON object to the results list
-                print(results)
 
             else:
                 logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
