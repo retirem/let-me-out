@@ -2,8 +2,6 @@ import requests, sys, os
 from configparser import ConfigParser
 
 # TODO:
-#   - rename the variables
-#   - specify JSON response
 #   - set logging
 
 def get_conf() -> str:
