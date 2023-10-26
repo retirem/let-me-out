@@ -74,13 +74,33 @@ def abuseipdb(ips):
                 # Create a JSON structure to store the information
                 ip_info = {
                     'ip': ip.ip,
+                    'isPublic': data.get('isPublic'),
+                    'ipVersion': data.get('ipVersion'),
+                    'isWhitelisted': data.get('isWhitelisted'),
                     'abuseConfidenceScore': data.get('abuseConfidenceScore'),
+                    'countryCode': data.get('countryCode'),
+                    'countryName': data.get('China'),
+                    'usageType': data.get('usageType'),
+                    'isp': data.get('isp'),
+                    'domain': data.get('domain'),
+                    'hostnames': data.get('hostnames'),
+                    'isTor': data.get('isTor'),
+                    'totalReports': data.get('totalReports'),
+                    'numDistinctUsers': data.get('numDistinctUsers'),
+                    'lastReportedAt': data.get('lastReportedAt'),
                 }
 
-                # Attempt to access the 'categories' field safely
-                categories = data.get('categories')
-                if categories:
-                    ip_info['categories'] = categories
+                reports = data.get('reports')
+
+                if reports:
+                    ip_info = {
+                        'reportedAt': get.data('reportedAt'),
+                        'comment': get.data('comment'),
+                        'categories': get.data('categories'),
+                        'reporterId': get.data('reporterId'),
+                        'reporterCountryCode': get.data('reporterCountryCode'),
+                        'reporterCountryName': get.data('reporterCountryName'),
+                    }
 
                 results.append(ip_info)  # Append the JSON object to the results list
                 print(results)
