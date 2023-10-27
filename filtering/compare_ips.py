@@ -71,43 +71,38 @@ def danish_subnets():
 
 def filtering(ip_addresses: list, subnets: list, networks: list):
     try:
-        print("[+] Filtering started ...\n\n This will take a while.\n\n")
-        matches = set()
+        print("[+] Filtering started ...\n[!] The output is two files: blocked_unique_ips.txt and blocked_networks.txt\n\n[!]This will take a while.\n\n")
+        ip_matches = set()
+        network_matches = set()
+
         # Checks wether the blocked IPs are hosts in at least one network.
         for ip in ip_addresses:
             for subnet in subnets:
                 if ip in subnet:
-                    matches.add((ip, subnet))
+                    ip_matches.add((ip, subnet))
         # Check wether the blocked networks are subnets at least one network.
         for net in networks:
             for subnet in subnets:
                 if net.subnet_of(subnet):
-                    matches.add((net, subnet))
+                    network_matches.add((net, subnet))
 
-        if matches:
-
-            with open(os.path.join(working_directory, 'blocked_ips_networks.txt'), "w") as output:
-                for element in matches:
-                    output.write(str(element[0]) + "\n")
-
-            ## Writing the results to the terminal.
-            #for match in matches:
-            #    print(f"Danish: {match[0]}, network: {match[1]}")
-
-            ## Uncomment the next 3 lines to make a summarised list.
-            #with open("sum.txt", "w") as output:
-            #    for element in matches:
-            #        output.write(str(element[0])+ " , " +str(element[1]) + "\n")
-
-            ## Uncomment the next 3 lines to make a list of just the containing networks.
-            #with open("containing_network.txt", "w") as output:
-            #    for element in matches:
-            #        output.write(str(element[1]) + "\n")
-
+        # Write the Danish blocked IPs and the corresponding Danish networks to a .txt file.
+        if ip_matches:
+            with open(os.path.join(working_directory, 'unique_blocked_ips.txt'), "w") as output:
+                for element in ip_matches:
+                    output.write(str(element[0]) + str(element[1]) + "\n")
         else:
-            print("[+] No matching IP addresses within networks found.")
+            print("[-/+] No matching blocked IP addresses within the Danish networks found.")
+        
+        # Write the Danish blocked subnetworks and the corresponding Danish networks to a .txt file.
+        if network_matches:
+            with open(os.path.join(working_directory, 'blocked_networks.txt'), "w") as output:
+                for element in network_matches:
+                    output.write(str(element[0]) + str(element[1]) + "\n")
+        else:
+            print("[-/+] No matching blocked networks within the Danish networks found.")
     except Exception as ex:
-        print("[-] For some reason filtering is not possible!")
+        print("[-] For some reason filtering is NOT possible!")
         print(ex)    
         sys.exit(1)
 
