@@ -110,11 +110,15 @@ def abuseipdb(ips):
             logging.error(f'AbuseIPDB API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
 
 
-def export_analyzed_ips(ips: list[IP_Info]) -> None:
-    analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.json')
+def export_analyzed_ips_as_txt(ips: list[IP_Info]) -> None:
+    analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.txt')
     with open(analyzed_path, 'w') as output_file:
-        json.dump([ip.__dict__ for ip in ips], output_file, indent=4)
-    logging.info('Created JSON file with analyzed IPs at: ' + analyzed_path)
+        for ip in ips:
+            output_line = f"{ip.ip}, {ip.network}, {ip.virustotal['reputation']}, {ip.virustotal['harmless_count']}, {ip.virustotal['suspicious_count']}, {ip.virustotal['malicious_count']}, {ip.virustotal['undetected_count']},{ip.abuseipdb_data['ip']},{ip.abuseipdb_data['isPublic']},{ip.abuseipdb_data['countryCode']}, {ip.abuseipdb_data['isp']}, {ip.abuseipdb_data['domain']}, {ip.abuseipdb_data['totalReports']}, {ip.abuseipdb_data['lastReportedAt']} "
+
+    output_file.write(output_line + "\n")
+
+    logging.info('Created text file with analyzed IPs at: ' + analyzed_path)
 
 
 if __name__ == '__main__':
@@ -127,4 +131,4 @@ if __name__ == '__main__':
     virustotal(ips=ips)
     abuseipdb(ips=ips)
 
-    export_analyzed_ips(ips=ips)
+    export_analyzed_ips_as_txt(ips=ips)
