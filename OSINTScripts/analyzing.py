@@ -112,9 +112,11 @@ def abuseipdb(ips):
 
 def export_analyzed_ips_as_txt(ips: list[IP_Info]) -> None:
     analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.txt')
-    with open(analyzed_path, 'w') as output_file:
-        for ip in ips:
-            output_line = f"{ip.ip}, {ip.network}, {ip.virustotal['reputation']}, {ip.virustotal['harmless_count']}, {ip.virustotal['suspicious_count']}, {ip.virustotal['malicious_count']}, {ip.virustotal['undetected_count']},{ip.abuseipdb_data['ip']},{ip.abuseipdb_data['isPublic']},{ip.abuseipdb_data['countryCode']}, {ip.abuseipdb_data['isp']}, {ip.abuseipdb_data['domain']}, {ip.abuseipdb_data['totalReports']}, {ip.abuseipdb_data['lastReportedAt']} "
+         for ip in ips:
+            output_line = f"{ip.ip}, {ip.network}, {ip.virustotal['reputation']}, {ip.virustotal['harmless_count']}, {ip.virustotal['suspicious_count']}, {ip.virustotal['malicious_count']}, {ip.virustotal['undetected_count']}, "
+
+            if ip.abuseipdb_data:
+                output_line += f"{ip.abuseipdb_data['ip']}, {ip.abuseipdb_data['isPublic']}, {ip.abuseipdb_data['countryCode']}, {ip.abuseipdb_data['isp']}, {ip.abuseipdb_data['domain']}, {ip.abuseipdb_data['totalReports']}, {ip.abuseipdb_data['lastReportedAt']}"
 
     output_file.write(output_line + "\n")
 
