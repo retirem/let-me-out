@@ -1,4 +1,4 @@
-import requests, sys, logging, os, json
+import requests, sys, logging, os, json, datetime  
 
 from IP_Info import IP_Info
 from api_handler import APIHandler
@@ -78,7 +78,7 @@ def abuseipdb(ips: list[IP_Info]) -> None:
                     'isWhitelisted': data.get('isWhitelisted'),
                     'abuseConfidenceScore': data.get('abuseConfidenceScore'),
                     'countryCode': data.get('countryCode'),
-                    'countryName': data.get('China'),
+                    'countryName': data.get('countryName'),
                     'usageType': data.get('usageType'),
                     'isp': data.get('isp'),
                     'domain': data.get('domain'),
@@ -111,9 +111,12 @@ def abuseipdb(ips: list[IP_Info]) -> None:
 
 def export_analyzed_ips_as_txt(ips: list[IP_Info]) -> None:
     analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.txt')
+    detectionDay = datetime.datetime.now()
+
     with open(analyzed_path, 'w') as output_file:
         for ip in ips:
-            output_line = f"{ip.ip}|{ip.network}|{ip.virustotal['reputation']}|{ip.virustotal['harmless_count']}|{ip.virustotal['suspicious_count']}|{ip.virustotal['malicious_count']}|{ip.virustotal['undetected_count']}|{ip.abuseipdb_data['isPublic']}|{ip.abuseipdb_data['countryCode']}|{ip.abuseipdb_data['isp']}|{ip.abuseipdb_data['domain']}|{ip.abuseipdb_data['totalReports']}|{ip.abuseipdb_data['lastReportedAt']}"
+            #output_line = f"{ip.ip}|{ip.network}|{ip.virustotal['reputation']}|{ip.virustotal['harmless_count']}|{ip.virustotal['suspicious_count']}|{ip.virustotal['malicious_count']}|{ip.virustotal['undetected_count']}|{ip.abuseipdb_data['isPublic']}|{ip.abuseipdb_data['countryCode']}|{ip.abuseipdb_data['isp']}|{ip.abuseipdb_data['domain']}|{ip.abuseipdb_data['totalReports']}|{ip.abuseipdb_data['lastReportedAt']}"
+            output_line = f"{ip.ip}|{detectionDay}|{ip.network}|{ip.abuseipdb_data['usageType']}|{ip.abuseipdb_data['isp']}|{ip.abuseipdb_data['domain']}|{ip.abuseipdb_data['countryCode']}|{ip.abuseipdb_data['totalReports']}|{ip.abuseipdb_data['numDistinctUsers']}|{ip.abuseipdb_data['isTor']}|{ip.abuseipdb_data['isWhitelisted']}|{ip.abuseipdb_data['categories']}|{ip.abuseipdb_data['reportedAt']}|{ip.abuseipdb_data['lastReportedAt']}|{ip.virustotal['undetected_count']}|{ip.virustotal['harmless_count']}|{ip.virustotal['suspicious_count']}|{ip.virustotal['malicious_count']}|{ip.virustotal['reputation']}"
 
             output_file.write(output_line + "\n")
 
