@@ -49,7 +49,7 @@ def virustotal(ips: list[IP_Info]) -> None:
 
     logging.info('Finished analyzing IPs with VirusTotal.')
 
-def abuseipdb(ips):
+def abuseipdb(ips: list[IP_Info]) -> None:
     logging.info('Starting analyzing IPs with AbuseIPDB...')
 
     # Define your AbuseIPDB API key
@@ -72,8 +72,7 @@ def abuseipdb(ips):
             data = response.json().get('data')
             if data:
                 # Create a JSON structure to store the information
-                ip_info = {
-                    'ip': ip.ip,
+                ip.abuseipdb_data = {
                     'isPublic': data.get('isPublic'),
                     'ipVersion': data.get('ipVersion'),
                     'isWhitelisted': data.get('isWhitelisted'),
@@ -93,16 +92,16 @@ def abuseipdb(ips):
                 reports = data.get('reports')
 
                 if reports:
-                    ip_info = {
-                        'reportedAt': get.data('reportedAt'),
-                        'comment': get.data('comment'),
-                        'categories': get.data('categories'),
-                        'reporterId': get.data('reporterId'),
-                        'reporterCountryCode': get.data('reporterCountryCode'),
-                        'reporterCountryName': get.data('reporterCountryName'),
+                    ip.abuseipdb_data = {
+                        'reportedAt': data.get('reportedAt'),
+                        'comment': data.get('comment'),
+                        'categories': data.get('categories'),
+                        'reporterId': data.get('reporterId'),
+                        'reporterCountryCode': data.get('reporterCountryCode'),
+                        'reporterCountryName': data.get('reporterCountryName'),
                     }
 
-                results.append(ip_info)  # Append the JSON object to the results list
+                results.append(ip.abuseipdb_data)  # Append the JSON object to the results list
 
             else:
                 logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
@@ -114,10 +113,7 @@ def export_analyzed_ips_as_txt(ips: list[IP_Info]) -> None:
     analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.txt')
     with open(analyzed_path, 'w') as output_file:
         for ip in ips:
-            output_line = f"{ip.ip}, {ip.network}, {ip.virustotal['reputation']}, {ip.virustotal['harmless_count']}, {ip.virustotal['suspicious_count']}, {ip.virustotal['malicious_count']}, {ip.virustotal['undetected_count']}, "
-
-            if ip.abuseipdb_data:
-                output_line += f"{ip.abuseipdb_data['ip']}, {ip.abuseipdb_data['isPublic']}, {ip.abuseipdb_data['countryCode']}, {ip.abuseipdb_data['isp']}, {ip.abuseipdb_data['domain']}, {ip.abuseipdb_data['totalReports']}, {ip.abuseipdb_data['lastReportedAt']}"
+            output_line = f"{ip.ip}, {ip.network}, {ip.virustotal['reputation']}, {ip.virustotal['harmless_count']}, {ip.virustotal['suspicious_count']}, {ip.virustotal['malicious_count']}, {ip.virustotal['undetected_count']}, {ip.abuseipdb_data['isPublic']}, {ip.abuseipdb_data['countryCode']}, {ip.abuseipdb_data['isp']}, {ip.abuseipdb_data['domain']}, {ip.abuseipdb_data['totalReports']}, {ip.abuseipdb_data['lastReportedAt']}"
 
             output_file.write(output_line + "\n")
 
