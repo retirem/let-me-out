@@ -10,7 +10,7 @@ db_params = {
 }
 
 # File path to the text file containing IP addresses
-file_path = '/path/to/yourfile.txt'  # Specify the full file path here
+file_path = '/home/kali/projects/let-me-out/example.txt'  # Specify the full file path here
 
 # Function to upload IP addresses to the specified table in the database
 def upload_ips_to_database(file_path, table_name):
@@ -23,15 +23,21 @@ def upload_ips_to_database(file_path, table_name):
         with open(file_path, 'r') as file:
             for line in file:
                 # Assuming each line contains an IP address
-                ip_address = line.strip()
-                
+                values = line.strip(, )
+
+             
+
                 # Get the current date and time
                 current_date = datetime.now()
 
                 # Insert IP address and date into the specified table
-                query = f"INSERT INTO ip (ip, date_added) VALUES (%s, %s)"
-                cursor.execute(query, (ip_address, current_date))
-
+                query_table1 = f"INSERT INTO ip (ip, date_added) VALUES (inet %s, date %s)"
+                query_table2 = f"INSERT INTO ip_data (danish_network, virus_reputation, virus_harmless, virus_suspicious, virus_malicious, virus_undetected, abuse_is_public, abuse_country_code, abuse_isp, abuse_domain, abuse_totalReports,abuse_last_reported_at) VALUES (cidr %s, int %s, %s"
+                
+                # cursor.execute(query, (ip_address, current_date))
+		cursor.execute(query_table1, (values[0],))
+		cursor.execute(query_table2, (values[1],))
+		
         # Commit the transaction and close the connection
         connection.commit()
         print(f"IP addresses uploaded to {table_name} table successfully!")
@@ -49,4 +55,4 @@ def upload_ips_to_database(file_path, table_name):
 # Example usage
 if __name__ == "__main__":
     # Upload IP addresses to the first table
-    upload_ips_to_database(file_path, 'first_table_name')
+    upload_ips_to_database(file_path, 'ip')
