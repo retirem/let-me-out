@@ -93,12 +93,12 @@ def abuseipdb(ips: list[IP_Info]) -> None:
 
                 if reports:
                     ip.abuseipdb_data = {
-                        'reportedAt': data.get('reportedAt'),
-                        'comment': data.get('comment'),
-                        'categories': data.get('categories'),
-                        'reporterId': data.get('reporterId'),
-                        'reporterCountryCode': data.get('reporterCountryCode'),
-                        'reporterCountryName': data.get('reporterCountryName'),
+                        'reportedAt': reports[0].get('reportedAt'),
+                        'comment': reports[0].get('comment'),
+                        'categories': reports[0].get('categories'),
+                        'reporterId': reports[0].get('reporterId'),
+                        'reporterCountryCode': reports[0].get('reporterCountryCode'),
+                        'reporterCountryName': reports[0].get('reporterCountryName'),
                     }
 
                 results.append(ip.abuseipdb_data)  # Append the JSON object to the results list
