@@ -58,51 +58,53 @@ def abuseipdb(ips: list[IP_Info]) -> None:
     results = []  # Create a list to store the results as JSON objects
 
     for ip in ips:
-        url = f'https://api.abuseipdb.com/api/v2/check?ipAddress={ip.ip}&maxAgeInDays=365'
+    url = f'https://api.abuseipdb.com/api/v2/check'
 
-        # Set up headers with your API key
-        headers = {
-            'Accept': 'application/json',
-            'Key': abuseipdb_api_key,
-        }
+    headers = {
+        'Accept': 'application/json',
+        'Key': API_KEY,
+    }
 
-        response = requests.get(url, headers=headers)
+    query_parameters: dict[str, str] = {
+        'ipAddress': ip.ip,
+        'maxAgeInDays': '365',
+        'verbose': ''
+    }
 
-        if response.status_code == 200:
-            data = response.json().get('data')
-            if data:
-                # Create a JSON structure to store the information
+    response = requests.get(url, headers=headers, params=query_parameters)
+
+    if response.status_code == 200:
+        data = response.json().get('data')
+        print(data)
+        if data:
+            ip.abuseipdb_data = {
+                'isPublic': data.get('isPublic'),
+                'ipVersion': data.get('ipVersion'),
+                'isWhitelisted': data.get('isWhitelisted'),
+                'abuseConfidenceScore': data.get('abuseConfidenceScore'),
+                'countryCode': data.get('countryCode'),
+                'countryName': data.get('countryName'),
+                'usageType': data.get('usageType'),
+                'isp': data.get('isp'),
+                'domain': data.get('domain'),
+                'hostnames': data.get('hostnames'),
+                'isTor': data.get('isTor'),
+                'totalReports': data.get('totalReports'),
+                'numDistinctUsers': data.get('numDistinctUsers'),
+                'lastReportedAt': data.get('lastReportedAt'),
+            }
+
+            reports = data.get('reports')
+
+            if reports:
                 ip.abuseipdb_data = {
-                    'isPublic': data.get('isPublic'),
-                    'ipVersion': data.get('ipVersion'),
-                    'isWhitelisted': data.get('isWhitelisted'),
-                    'abuseConfidenceScore': data.get('abuseConfidenceScore'),
-                    'countryCode': data.get('countryCode'),
-                    'countryName': data.get('countryName'),
-                    'usageType': data.get('usageType'),
-                    'isp': data.get('isp'),
-                    'domain': data.get('domain'),
-                    'hostnames': data.get('hostnames'),
-                    'isTor': data.get('isTor'),
-                    'totalReports': data.get('totalReports'),
-                    'numDistinctUsers': data.get('numDistinctUsers'),
-                    'lastReportedAt': data.get('lastReportedAt'),
+                    'reportedAt': reports[0].get('reportedAt'),
+                    'comment': reports[0].get('comment'),
+                    'categories': reports[0].get('categories'),
+                    'reporterId': reports[0].get('reporterId'),
+                    'reporterCountryCode': reports[0].get('reporterCountryCode'),
+                    'reporterCountryName': reports[0].get('reporterCountryName'),
                 }
-
-                reports = data.get('reports')
-
-                if reports:
-                    ip.abuseipdb_data = {
-                        'reportedAt': reports[0].get('reportedAt'),
-                        'comment': reports[0].get('comment'),
-                        'categories': reports[0].get('categories'),
-                        'reporterId': reports[0].get('reporterId'),
-                        'reporterCountryCode': reports[0].get('reporterCountryCode'),
-                        'reporterCountryName': reports[0].get('reporterCountryName'),
-                    }
-
-                results.append(ip.abuseipdb_data)  # Append the JSON object to the results list
-
             else:
                 logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
         else:
