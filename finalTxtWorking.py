@@ -3,10 +3,10 @@ from datetime import datetime
 
 # Database connection parameters
 db_params = {
-    'host': 'localhost',        # Database host (e.g., localhost)
+    'host': 'postgres',        # Database host (e.g., localhost)
     'database': 'postgres',      # Database name
-    'user': 'myuser',           # Database username
-    'password': 'mypassword'    # Database password
+    'user': 'postgres',           # Database username
+    'password': 'postgres'    # Database password
 }
 
 # File path to the text file containing IP addresses
@@ -23,7 +23,7 @@ def upload_ips_to_database(file_path, table_name):
         with open(file_path, 'r') as file:
             for line in file:
                 # Assuming each line contains an IP address
-                values = line.strip(|)
+                values = line.strip(', ')
 
              
 
@@ -31,8 +31,11 @@ def upload_ips_to_database(file_path, table_name):
                 current_date = datetime.now()
 
                 # Insert IP address and date into the specified table
-                query_table1 = f"INSERT INTO ip (ip) VALUES (inet %s)"
-                query_table2 = f"INSERT INTO ip_data (danish_network, current_date, virus_reputation, virus_harmless, virus_suspicious, virus_malicious, virus_undetected, abuse_is_public, abuse_country_code, abuse_isp, abuse_domain, abuse_totalReports,abuse_last_reported_at) VALUES (cidr %s, date %s, integer %s, integer %s, integer %s, integer %s, integer %s, integer %s, boolean %s, text %s, text %s, text %s, integer %s, text %s)"
+                 query_table1 = f"INSERT INTO ip (ip) VALUES (inet %s)"
+                 query_table2 = f"INSERT INTO ip_data (danish_network, current_date, virus_reputation, virus_harmless, virus_suspicious, virus_malicious, virus_undetected, abuse_is_public, abuse_country_code, abuse_isp, abuse_domain, abuse_totalReports,abuse_last_reported_at) VALUES (cidr %s, date %s, integer %s, integer %s, integer %s, integer %s, integer %s, integer %s, boolean %s, text %s, text %s, text %s, integer %s, text %s)"
+                
+                # query_table1 = f"INSERT INTO ip (ip) VALUES (inet %s)"
+                # query_table2 = f"INSERT INTO ip_data (danish_network, current_date) VALUES (cidr %s, integer %s, text %s, text %s, text %s, integer %s, integer %s, boolean %s, boolean %s, integer %s, date %s, date %s, varchar %s)"
                 
                 # cursor.execute(query, (ip_address, current_date))
 		cursor.execute(query_table1, (values[0],))
