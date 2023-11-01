@@ -52,64 +52,92 @@ def virustotal(ips: list[IP_Info]) -> None:
 def abuseipdb(ips: list[IP_Info]) -> None:
     logging.info('Starting analyzing IPs with AbuseIPDB...')
 
-    # Define your AbuseIPDB API key
     abuseipdb_api_key = api_handler.get_abuseIPDB_key()
 
-    results = []  # Create a list to store the results as JSON objects
-
     for ip in ips:
-    url = f'https://api.abuseipdb.com/api/v2/check'
+        url = f'https://api.abuseipdb.com/api/v2/check'
 
-    headers = {
-        'Accept': 'application/json',
-        'Key': API_KEY,
-    }
+        headers = {
+            'Accept': 'application/json',
+            'Key': abuseipdb_api_key,
+        }
 
-    query_parameters: dict[str, str] = {
-        'ipAddress': ip.ip,
-        'maxAgeInDays': '365',
-        'verbose': ''
-    }
+        query_parameters: dict[str, str] = {
+            'ipAddress': ip.ip,
+            'maxAgeInDays': '365',
+            'verbose': ''
+        }
 
-    response = requests.get(url, headers=headers, params=query_parameters)
+        response = requests.get(url, headers=headers, params=query_parameters)
 
-    if response.status_code == 200:
-        data = response.json().get('data')
-        print(data)
-        if data:
-            ip.abuseipdb_data = {
-                'isPublic': data.get('isPublic'),
-                'ipVersion': data.get('ipVersion'),
-                'isWhitelisted': data.get('isWhitelisted'),
-                'abuseConfidenceScore': data.get('abuseConfidenceScore'),
-                'countryCode': data.get('countryCode'),
-                'countryName': data.get('countryName'),
-                'usageType': data.get('usageType'),
-                'isp': data.get('isp'),
-                'domain': data.get('domain'),
-                'hostnames': data.get('hostnames'),
-                'isTor': data.get('isTor'),
-                'totalReports': data.get('totalReports'),
-                'numDistinctUsers': data.get('numDistinctUsers'),
-                'lastReportedAt': data.get('lastReportedAt'),
-            }
+        if response.status_code == 200:
+            data = response.json().get('data')
 
-            reports = data.get('reports')
-
-            if reports:
+            if data:
                 ip.abuseipdb_data = {
-                    'reportedAt': reports[0].get('reportedAt'),
-                    'comment': reports[0].get('comment'),
-                    'categories': reports[0].get('categories'),
-                    'reporterId': reports[0].get('reporterId'),
-                    'reporterCountryCode': reports[0].get('reporterCountryCode'),
-                    'reporterCountryName': reports[0].get('reporterCountryName'),
+                    'isPublic': data.get('isPublic'),
+                    'ipVersion': data.get('ipVersion'),
+                    'isWhitelisted': data.get('isWhitelisted'),
+                    'abuseConfidenceScore': data.get('abuseConfidenceScore'),
+                    'countryCode': data.get('countryCode'),
+                    'countryName': data.get('countryName'),
+                    'usageType': data.get('usageType'),
+                    'isp': data.get('isp'),
+                    'domain': data.get('domain'),
+                    'hostnames': data.get('hostnames'),
+                    'isTor': data.get('isTor'),
+                    'totalReports': data.get('totalReports'),
+                    'numDistinctUsers': data.get('numDistinctUsers'),
+                    'lastReportedAt': data.get('lastReportedAt'),
                 }
-            else:
-                logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
-        else:
-            logging.error(f'AbuseIPDB API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
 
+                reports = data.get('reports')
+                report_datas: list[dict[str, str]] = []
+
+                if reports:
+                    for report in reports:
+                        report_data: dict[str, str] = {
+                            'reportedAt': report.get('reportedAt'),
+                            'comment': report.get('comment'),
+                            'categories': resolve_report_categories([int(category) for category in report.get('categories')]),
+                            'reporterId': report.get('reporterId'),
+                            'reporterCountryCode': report.get('reporterCountryCode'),
+                            'reporterCountryName': report.get('reporterCountryName'),
+                        }
+                        report_datas.append(report_data)
+                    ip.abuseipdb_data['reports'] = report_datas
+                else:
+                    logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
+            else:
+                logging.error(f'AbuseIPDB API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
+
+def resolve_report_categories(categories: list[int]) -> str:
+    category_names: dict[int, str] = {
+        1: 'DNS Compromise',
+        2: 'DNS Poisoning',
+        3: 'Fraud Orders',
+        4: 'DDoS Attack',
+        5: 'FTP Brute-Force',
+        6: 'Ping of Death ',
+        7: 'Phishing',
+        8: 'Fraud VoIP',
+        9: 'Open Proxy',
+        10: 'Web Spam',
+        11: 'Email Spam',
+        12: 'Blog Spam',
+        13: 'VPN IP',
+        14: 'Port Scan',
+        15: 'Hacking',
+        16: 'SQL Injection',
+        17: 'Spoofing',
+        18: 'Brute-Force',
+        19: 'Bad Web Bot',
+        20: 'Exploited Host',
+        21: 'Web App Attack',
+        22: 'SSH',
+        23: 'IoT Targeted',
+    }
+    return ', '.join([category_names.get(category) for category in categories])
 
 def export_analyzed_ips_as_txt(ips: list[IP_Info]) -> None:
     analyzed_path: str = os.path.join(working_directory, 'analyzed_ips.txt')
