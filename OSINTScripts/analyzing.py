@@ -92,21 +92,23 @@ def abuseipdb(ips: list[IP_Info]) -> None:
                 }
 
                 reports = data.get('reports')
+                report_data: dict[str, str] = {}
                 if reports:
                     reports.sort(key=lambda report: report.get('reportedAt'), reverse=True)
                     # We need only the newest report
                     report = reports[0]
 
-                    ip.abuseipdb_data['reportedAt'] = report.get('reportedAt')
-                    ip.abuseipdb_data['comment'] = report.get('comment')
-                    ip.abuseipdb_data['categories'] = resolve_report_categories([int(category) for category in report.get('categories')])
-                    ip.abuseipdb_data['reporterId'] = report.get('reporterId')
-                    ip.abuseipdb_data['reporterCountryCode'] = report.get('reporterCountryCode')
-                    ip.abuseipdb_data['reporterCountryName'] = report.get('reporterCountryName')
+                    report_data['reportedAt'] = report.get('reportedAt')
+                    report_data['categories'] = resolve_report_categories([int(category) for category in report.get('categories')])
                 else:
-                    logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
+                    report_data['reportedAt'] = 'N/A'
+                    report_data['categories'] = 'N/A'
+
+                ip.abuseipdb_data['report'] = report_data
             else:
-                logging.error(f'AbuseIPDB API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
+                logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
+        else:
+            logging.error(f'AbuseIPDB API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
 
 def resolve_report_categories(categories: list[int]) -> str:
     category_names: dict[int, str] = {
@@ -143,7 +145,7 @@ def export_analyzed_ips_as_txt(ips: list[IP_Info]) -> None:
     with open(analyzed_path, 'w') as output_file:
         for ip in ips:
             #output_line = f"{ip.ip}|{ip.network}|{ip.virustotal['reputation']}|{ip.virustotal['harmless_count']}|{ip.virustotal['suspicious_count']}|{ip.virustotal['malicious_count']}|{ip.virustotal['undetected_count']}|{ip.abuseipdb_data['isPublic']}|{ip.abuseipdb_data['countryCode']}|{ip.abuseipdb_data['isp']}|{ip.abuseipdb_data['domain']}|{ip.abuseipdb_data['totalReports']}|{ip.abuseipdb_data['lastReportedAt']}"
-            output_line = f"{ip.ip}|{detectionDay}|{ip.network}|{ip.abuseipdb_data['usageType']}|{ip.abuseipdb_data['isp']}|{ip.abuseipdb_data['domain']}|{ip.abuseipdb_data['countryCode']}|{ip.abuseipdb_data['totalReports']}|{ip.abuseipdb_data['numDistinctUsers']}|{ip.abuseipdb_data['isTor']}|{ip.abuseipdb_data['isWhitelisted']}|{ip.abuseipdb_data['categories']}|{ip.abuseipdb_data['reportedAt']}|{ip.abuseipdb_data['lastReportedAt']}|{ip.virustotal['undetected_count']}|{ip.virustotal['harmless_count']}|{ip.virustotal['suspicious_count']}|{ip.virustotal['malicious_count']}|{ip.virustotal['reputation']}"
+            output_line = f"{ip.ip}|{detectionDay}|{ip.network}|{ip.abuseipdb_data['usageType']}|{ip.abuseipdb_data['isp']}|{ip.abuseipdb_data['domain']}|{ip.abuseipdb_data['countryCode']}|{ip.abuseipdb_data['totalReports']}|{ip.abuseipdb_data['numDistinctUsers']}|{ip.abuseipdb_data['isTor']}|{ip.abuseipdb_data['isWhitelisted']}|{ip.abuseipdb_data['report']['categories']}|{ip.abuseipdb_data['report']['reportedAt']}|{ip.abuseipdb_data['lastReportedAt']}|{ip.virustotal['undetected_count']}|{ip.virustotal['harmless_count']}|{ip.virustotal['suspicious_count']}|{ip.virustotal['malicious_count']}|{ip.virustotal['reputation']}"
 
             output_file.write(output_line + "\n")
 
