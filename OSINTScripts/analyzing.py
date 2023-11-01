@@ -92,20 +92,17 @@ def abuseipdb(ips: list[IP_Info]) -> None:
                 }
 
                 reports = data.get('reports')
-                report_datas: list[dict[str, str]] = []
-
                 if reports:
-                    for report in reports:
-                        report_data: dict[str, str] = {
-                            'reportedAt': report.get('reportedAt'),
-                            'comment': report.get('comment'),
-                            'categories': resolve_report_categories([int(category) for category in report.get('categories')]),
-                            'reporterId': report.get('reporterId'),
-                            'reporterCountryCode': report.get('reporterCountryCode'),
-                            'reporterCountryName': report.get('reporterCountryName'),
-                        }
-                        report_datas.append(report_data)
-                    ip.abuseipdb_data['reports'] = report_datas
+                    reports.sort(key=lambda report: report.get('reportedAt'), reverse=True)
+                    # We need only the newest report
+                    report = reports[0]
+
+                    ip.abuseipdb_data['reportedAt'] = report.get('reportedAt')
+                    ip.abuseipdb_data['comment'] = report.get('comment')
+                    ip.abuseipdb_data['categories'] = resolve_report_categories([int(category) for category in report.get('categories')])
+                    ip.abuseipdb_data['reporterId'] = report.get('reporterId')
+                    ip.abuseipdb_data['reporterCountryCode'] = report.get('reporterCountryCode')
+                    ip.abuseipdb_data['reporterCountryName'] = report.get('reporterCountryName')
                 else:
                     logging.warning(f'No AbuseIPDB data available for IP: {ip.ip}')
             else:
