@@ -1,4 +1,4 @@
-193.162.255.34, None, 0, 0, 0, 0, 88, True, DK, Andel Holding A/S, None, 0, None
-193.162.255.45, None, 0, 0, 0, 0, 88, True, DK, Andel Holding A/S, None, 0, None
-193.162.255.89, None, 0, 0, 0, 0, 88, True, DK, Andel Holding A/S, None, 0, None
-103.153.54.67, 103.153.54.0/24, 0, 0, 0, 0, 88, True, AU, Keepit A/S, keepit.com, 0, None
+193.162.255.34|2023-11-01 14:39:26.963440|None|Commercial|Andel Holding A/S|None|DK|0|0|False|None|N/A|N/A|None|88|0|0|0|0
+193.162.255.45|2023-11-01 14:39:26.963440|None|Commercial|Andel Holding A/S|None|DK|0|0|False|None|N/A|N/A|None|88|0|0|0|0
+193.162.255.89|2023-11-01 14:39:26.963440|None|Commercial|Andel Holding A/S|None|DK|0|0|False|None|N/A|N/A|None|88|0|0|0|0
+103.153.54.67|2023-11-01 14:39:26.963440|103.153.54.0/24|Data Center/Web Hosting/Transit|Keepit A/S|keepit.com|AU|0|0|False|None|N/A|N/A|None|88|0|0|0|0

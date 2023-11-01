@@ -3,14 +3,14 @@ from datetime import datetime
 
 # Database connection parameters
 db_params = {
-    'host': 'postgres',        # Database host (e.g., localhost)
+    'host': 'localhost',        # Database host (e.g., localhost)
     'database': 'postgres',      # Database name
     'user': 'postgres',           # Database username
     'password': 'postgres'    # Database password
 }
 
 # File path to the text file containing IP addresses
-file_path = '/home/kali/projects/let-me-out/example.txt'  # Specify the full file path here
+file_path = '/home/kali/let-me-out/example.txt'  # Specify the full file path here
 
 # Function to upload IP addresses to the specified table in the database
 def upload_ips_to_database(file_path, table_name):
@@ -23,24 +23,33 @@ def upload_ips_to_database(file_path, table_name):
         with open(file_path, 'r') as file:
             for line in file:
                 # Assuming each line contains an IP address
-                values = line.strip(', ')
+                values = line.strip().split('|')
 
-             
+ 	# Check if there are enough elements in the values list
+                if len(values) >= 19:
+                    
+                    # Insert IP address and date into the specified table
+                    query_table1 = "INSERT INTO ip (ip) VALUES (%s)"
+                    query_table2 = "INSERT INTO ip_data (detection_day, danish_network, usage_type, isp, domain, country_code, total_reports, num_distinct_users, is_tor, is_whitelisted, categories, reported_at, last_reported_at, undetected, harmless, suspicious, malicious, reputation) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-                # Get the current date and time
-                current_date = datetime.now()
 
-                # Insert IP address and date into the specified table
-                 query_table1 = f"INSERT INTO ip (ip) VALUES (inet %s)"
-                 query_table2 = f"INSERT INTO ip_data (danish_network, current_date, virus_reputation, virus_harmless, virus_suspicious, virus_malicious, virus_undetected, abuse_is_public, abuse_country_code, abuse_isp, abuse_domain, abuse_totalReports,abuse_last_reported_at) VALUES (cidr %s, date %s, integer %s, integer %s, integer %s, integer %s, integer %s, integer %s, boolean %s, text %s, text %s, text %s, integer %s, text %s)"
-                
-                # query_table1 = f"INSERT INTO ip (ip) VALUES (inet %s)"
-                # query_table2 = f"INSERT INTO ip_data (danish_network, current_date) VALUES (cidr %s, integer %s, text %s, text %s, text %s, integer %s, integer %s, boolean %s, boolean %s, integer %s, date %s, date %s, varchar %s)"
-                
-                # cursor.execute(query, (ip_address, current_date))
-		cursor.execute(query_table1, (values[0],))
-		cursor.execute(query_table2, (values[1],))
-		
+
+                    # Pad with None values and replace them with 'NULL' 
+                    values = [value if value is not None else None for value in values] + [None] * (20 - len(values))
+                    
+                     
+                    # Insert IP address and date into the specified table
+                    cursor.execute(query_table1, (values[0],))
+                    # Handle 'None' values for danish_network
+                    # danish_network = values[1] if values[1] != 'None' else None
+                    values = [None if value == 'None' else value for value in values]
+                    # Insert data into 'ip_data' table 
+                    cursor.execute(query_table2, (values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19] ))
+
+                else:
+                    print(f"Skipping line due to insufficient values: {line}")
+
+        
         # Commit the transaction and close the connection
         connection.commit()
         print(f"IP addresses uploaded to {table_name} table successfully!")
