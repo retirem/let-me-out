@@ -25,11 +25,13 @@ def upload_ips_to_database(file_path, table_name):
                 # Assuming each line contains an IP address
                 values = line.strip().split('|')
 
+
+
  	# Check if there are enough elements in the values list
                 if len(values) >= 19:
                     
                     # Insert IP address and date into the specified table
-                    query_table1 = "INSERT INTO ip (ip) VALUES (%s)"
+                    query_table1 = "INSERT INTO ip (ip) VALUES (%s) WHERE NOT EXISTS (SELECT 1 FROM ip WHERE ip = %s);"
                     query_table2 = "INSERT INTO ip_data (detection_day, danish_network, usage_type, isp, domain, country_code, total_reports, num_distinct_users, is_tor, is_whitelisted, categories, reported_at, last_reported_at, undetected, harmless, suspicious, malicious, reputation) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
 
@@ -40,8 +42,7 @@ def upload_ips_to_database(file_path, table_name):
                      
                     # Insert IP address and date into the specified table
                     cursor.execute(query_table1, (values[0],))
-                    # Handle 'None' values for danish_network
-                    # danish_network = values[1] if values[1] != 'None' else None
+
                     values = [None if value == 'None' else value for value in values]
                     # Insert data into 'ip_data' table 
                     cursor.execute(query_table2, (values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19] ))
