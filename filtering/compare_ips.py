@@ -89,16 +89,25 @@ def filtering(ip_addresses: list, subnets: list, networks: list):
         # Write the Danish blocked IPs and the corresponding Danish networks to a .txt file.
         if ip_matches:
             with open(os.path.join(working_directory, 'unique_blocked_ips.txt'), "w") as output:
+                index_ip = 1
                 for element in ip_matches:
-                    output.write(str(element[0]) + str(element[1]) + "\n")
+                    if index_ip == len(ip_matches):
+                        output.write(str(element[0]))
+                    else:
+                        output.write(str(element[0]) + "\n")
         else:
             print("[-/+] No matching blocked IP addresses within the Danish networks found.")
         
         # Write the Danish blocked subnetworks and the corresponding Danish networks to a .txt file.
         if network_matches:
             with open(os.path.join(working_directory, 'blocked_networks.txt'), "w") as output:
-                for element in network_matches:
-                    output.write(str(element[0]) + str(element[1]) + "\n")
+                index_net = 1
+                for element in network_matches: 
+                    if index_net == len(network_matches):
+                        output.write(str(element[0]))
+                    else:
+                        output.write(str(element[0]) + "\n")
+
         else:
             print("[-/+] No matching blocked networks within the Danish networks found.")
     except Exception as ex:
