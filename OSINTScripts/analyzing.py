@@ -1,8 +1,9 @@
-import requests, sys, logging, os, json, datetime  
+import requests, sys, logging, os, time, datetime, threading
 
 from IP_Info import IP_Info
 from api_handler import APIHandler
 from configparser import ConfigParser
+from threading import Thread
 
 
 def get_conf() -> tuple[str, str, str]:
@@ -24,29 +25,56 @@ def read_ips() -> list[IP_Info]:
     with open(ip_path, 'r') as ip_file:
         return list(map(lambda read_ip: IP_Info(read_ip), map(lambda ip: ip.strip(), ip_file.readlines())))
 
+def get_chunks(list_to_chunk: list[IP_Info], chunk_size: int):
+    for i in range(0, len(list_to_chunk), chunk_size):
+        yield list_to_chunk[i:i+chunk_size]
+
 def virustotal(ips: list[IP_Info]) -> None:
     logging.info('Starting analyzing IPs with VirusTotal...')
-    headers = {'x-apikey': api_handler.get_virustotal_key()}
-    for ip in ips:
-        url: str = f'https://www.virustotal.com/api/v3/ip_addresses/{ip.ip}'
-        response: requests.Response = requests.get(url, headers=headers)
 
-        if response.status_code == 200:
-            data = response.json().get('data')
+    # ips = list(get_chunks(list_to_chunk=ips, chunk_size=4))
+    ips = list(get_chunks(list_to_chunk=ips, chunk_size=(len(ips) // api_handler.get_virustotal_key_count()) + 1))
+    
+    virustotal_ips: list[IP_Info] = []
+    def worker(ips: list[IP_Info], api_key: str) -> None:
+        counter: int = 0
+        headers = {'x-apikey': api_key}
+        for ip in ips:
+            url: str = f'https://www.virustotal.com/api/v3/ip_addresses/{ip.ip}'
+            response: requests.Response = requests.get(url, headers=headers)
 
-            ip.network = data.get('attributes').get('network')
+            if response.status_code == 200:
+                data = response.json().get('data')
 
-            last_analysis_stats = data.get('attributes').get('last_analysis_stats')
-            ip.virustotal = {
-                'reputation': data.get('attributes').get('reputation'),
-                'harmless_count': last_analysis_stats.get('harmless'),
-                'suspicious_count': last_analysis_stats.get('suspicious'),
-                'malicious_count': last_analysis_stats.get('malicious'),
-                'undetected_count': last_analysis_stats.get('undetected'),
-            }
-        else:
-            logging.error(f'VirusTotal API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
+                ip.network = data.get('attributes').get('network')
 
+                last_analysis_stats = data.get('attributes').get('last_analysis_stats')
+                ip.virustotal = {
+                    'reputation': data.get('attributes').get('reputation'),
+                    'harmless_count': last_analysis_stats.get('harmless'),
+                    'suspicious_count': last_analysis_stats.get('suspicious'),
+                    'malicious_count': last_analysis_stats.get('malicious'),
+                    'undetected_count': last_analysis_stats.get('undetected'),
+                }
+                virustotal_ips.append(ip)
+            else:
+                logging.error(f'VirusTotal API response gave error for IP: {ip.ip}, Status code: {response.status_code}')
+            counter += 1
+            if counter == 4:
+                time.sleep(60)
+                counter = 0
+
+    threads = []
+    for i in range(0, api_handler.get_virustotal_key_count()):
+        threads.append(Thread(target=worker, args=[ips[i], api_handler.get_virustotal_key_index(index=i)]))
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    ips = virustotal_ips
     logging.info('Finished analyzing IPs with VirusTotal.')
 
 def abuseipdb(ips: list[IP_Info]) -> None:
@@ -154,9 +182,12 @@ if __name__ == '__main__':
     (working_directory, virustotal_api_keys, abuseIPDB_api_keys) = get_conf()
     api_handler = APIHandler(virustotal_keys=virustotal_api_keys, abuseIPDB_keys=abuseIPDB_api_keys)
 
-    configure_logging()
-    ips: list[IP_Info] = read_ips()
+    #configure_logging()
+    #ips: list[IP_Info] = read_ips()
+    with open('unique_blocked_ips.txt', 'r') as file:
+        ips = list(map(lambda read_ip: IP_Info(read_ip), map(lambda ip: ip.strip(), file.readlines())))
+
     virustotal(ips=ips)
     abuseipdb(ips=ips)
 
-    export_analyzed_ips_as_txt(ips=ips)
+    #export_analyzed_ips_as_txt(ips=ips)

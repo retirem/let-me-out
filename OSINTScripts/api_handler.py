@@ -22,6 +22,12 @@ class APIHandler:
             sys.exit(1)
 
         return self.virustotal_keys[self.virustotal_current_key_index]
+    
+    def get_virustotal_key_index(self, index: int) -> str:
+        return self.virustotal_keys[index]
+    
+    def get_virustotal_key_count(self) -> int:
+        return len(self.virustotal_keys)
 
     def get_abuseIPDB_key(self) -> str:
         self.abuseIPDB_usage_count += 1
