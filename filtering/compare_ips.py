@@ -129,13 +129,13 @@ def create_daily_delta(filtered: set[tuple[IPv4Address|IPv4Network, IPv4Network]
         appeared = [address for address in todays_blocked if address not in prev_blocked]
         deleted = [address for address in prev_blocked if address not in todays_blocked]
     else:
-        appeared = deleted = [address for address in todays_blocked]
+        appeared = deleted = todays_blocked
 
-    with open(os.path.join(working_directory, 'delta_appeared.txt')) as delta_file:
-        delta_file.writelines([address for address in appeared])
+    with open(os.path.join(working_directory, 'delta_appeared.txt')) as appeared_file:
+        appeared_file.writelines('\n'.join(appeared))
 
-    with open(os.path.join(working_directory, 'delta_deleted.txt')) as delta_file:
-        delta_file.writelines([address for address in deleted])
+    with open(os.path.join(working_directory, 'delta_deleted.txt')) as deleted_file:
+        deleted_file.writelines('\n'.join(deleted))
 
 if __name__ == "__main__":
     global root_working_directory, working_directory
