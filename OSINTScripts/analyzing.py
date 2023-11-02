@@ -52,16 +52,13 @@ def virustotal(ips: list[IP_Info]) -> None:
 def abuseipdb(ips: list[IP_Info]) -> None:
     logging.info('Starting analyzing IPs with AbuseIPDB...')
 
-    abuseipdb_api_key = api_handler.get_abuseIPDB_key()
+    headers = {
+        'Accept': 'application/json',
+        'Key': api_handler.get_abuseIPDB_key(),
+    }
 
     for ip in ips:
         url = f'https://api.abuseipdb.com/api/v2/check'
-
-        headers = {
-            'Accept': 'application/json',
-            'Key': abuseipdb_api_key,
-        }
-
         query_parameters: dict[str, str] = {
             'ipAddress': ip.ip,
             'maxAgeInDays': '365',
