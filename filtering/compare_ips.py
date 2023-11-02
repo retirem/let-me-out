@@ -91,20 +91,6 @@ def filtering(ip_addresses: list, subnets: list, networks: list) -> set[tuple[IP
             for element in matches:
                 output.write(str(element[0]) + "\n")
 
-        ## Writing the results to the terminal.
-        #for match in matches:
-        #    print(f"Danish: {match[0]}, network: {match[1]}")
-
-        ## Uncomment the next 3 lines to make a summarised list.
-        #with open("sum.txt", "w") as output:
-        #    for element in matches:
-        #        output.write(str(element[0])+ " , " +str(element[1]) + "\n")
-
-        ## Uncomment the next 3 lines to make a list of just the containing networks.
-        #with open("containing_network.txt", "w") as output:
-        #    for element in matches:
-        #        output.write(str(element[1]) + "\n")
-
         return matches
 
     except Exception as ex:
