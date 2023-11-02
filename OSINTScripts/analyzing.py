@@ -40,6 +40,7 @@ def virustotal(ips: list[IP_Info]) -> None:
         counter: int = 0
         headers = {'x-apikey': api_key}
         for ip in ips:
+            logging.log('Requesting data with VirusTotal for ip: ' + ip.ip)
             url: str = f'https://www.virustotal.com/api/v3/ip_addresses/{ip.ip}'
             response: requests.Response = requests.get(url, headers=headers)
 
