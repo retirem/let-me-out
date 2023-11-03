@@ -32,7 +32,6 @@ def get_chunks(list_to_chunk: list[IP_Info], chunk_size: int):
 def virustotal(ips: list[IP_Info]) -> None:
     logging.info('Starting analyzing IPs with VirusTotal...')
 
-    # ips = list(get_chunks(list_to_chunk=ips, chunk_size=4))
     ips = list(get_chunks(list_to_chunk=ips, chunk_size=(len(ips) // api_handler.get_virustotal_key_count()) + 1))
     
     virustotal_ips: list[IP_Info] = []
@@ -40,7 +39,7 @@ def virustotal(ips: list[IP_Info]) -> None:
         counter: int = 0
         headers = {'x-apikey': api_key}
         for ip in ips:
-            logging.log('Requesting data with VirusTotal for ip: ' + ip.ip)
+            logging.info('Requesting data with VirusTotal for ip: ' + ip.ip)
             url: str = f'https://www.virustotal.com/api/v3/ip_addresses/{ip.ip}'
             response: requests.Response = requests.get(url, headers=headers)
 
