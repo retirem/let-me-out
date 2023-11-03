@@ -31,9 +31,11 @@ def NETcheck_ripe_database():
                 net_danish_byRIPEdb += 1
             else:
                 net_not_danish_byRIPEdb += 1
-                net_not_danish.add(ip)
+                net_not_danish.add(nets)
             with open(os.path.join(working_directory, 'NET_ripeDB_check.txt'), "w") as output:
-                output.write(str(net_not_danish_byRIPEdb) + "\n")
+                output.write(f"Number of networks are not Danish according to RIPE NCC (RIPE DB)\n{str(net_not_danish_byRIPEdb)}" + "\n")
+                for net in net_not_danish:
+                    output.write(net + "\n")
         except Exception as ex:
             print("[-] Failed to send requests (containing blocked networks) to the RIPE DB.")
             print(ex)
@@ -71,7 +73,10 @@ def IPcheck_ripe_database():
                     ip_not_danish_byRIPEdb += 1
                     ip_not_danish.add(ip)
             with open(os.path.join(working_directory, 'IP_ripeDB_check.txt'), "w") as output:
-                output.write(str(ip_not_danish_byRIPEdb) + "\n")
+                output.write(f"Number of IPs are not Danish according to RIPE NCC (RIPE DB):\n{str(ip_not_danish_byRIPEdb)}" + "\n")
+                for ip in ip_not_danish:
+                    output.write(ip + "\n")
+
         except Exception as ex:
             print("[-] Failed to send requests (containing blocked IPs) to the RIPE DB.")
             print(ex)
