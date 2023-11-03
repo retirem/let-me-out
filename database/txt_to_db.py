@@ -1,20 +1,19 @@
-import psycopg2, os, sys
+import psycopg2, os, sys, logging
 from configparser import ConfigParser
 
-def get_conf() -> tuple[str, str, str]:
+def get_conf() -> tuple[str, dict[str, str]]:
     conf_path: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../script.conf')
     config_parser: ConfigParser = ConfigParser()
     config_parser.read(conf_path)
-    return (config_parser.get('CONFIGS', 'workdir_todays'),)
+    return (config_parser.get('CONFIGS', 'workdir_todays'),
+            dict(config_parser.items('DBCredentials')))
 
-db_params = {
-    'host': 'localhost',        # Database host (e.g., localhost)
-    'database': '',      # Database name
-    'user': '',           # Database username
-    'password': ''    # Database password
-}
+def configure_logging() -> None:
+    log_path: str = os.path.join(working_directory, 'database_insert.log')
+    handlers: list[logging.Handler] = [logging.FileHandler(filename=log_path), logging.StreamHandler(stream=sys.stdout)]
+    logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
-file_path = '/home/letmeout/git/let-me-out/example.txt' 
+file_path = '/home/letmeout/git/let-me-out/example.txt'
 
 def read_data_from_txt():
     data_from_txt = list()
@@ -31,24 +30,27 @@ def read_data_from_txt():
         print(ex)
         sys.exit(1)
 
-
-def update_ip_table(data_list):
-    connection = psycopg2.connect(**db_params)
-    cursor = connection.cursor()
+def update_ip_table(data_list) -> None:
     try:
-        for data in data_list:
-            query_table1 = "INSERT INTO ip (ip) VALUES (%s)" 
-            cursor.execute(query_table1, (data[0],))
-        connection.commit()
-        if connection:
-            cursor.close()
-            connection.close()
+        connection = psycopg2.connect(host='localhost', 
+                                    database=db_credentials.get('database'),
+                                    user=db_credentials.get('user'),
+                                    password=db_credentials.get('password'))
+        cursor = connection.cursor()
+        query: str = 'INSERT INTO ip (ip) VALUES (%s);'
 
+        for data in data_list:
+            cursor.execute(query, (data[0],))
+        connection.commit()
     except Exception as ex:
-        print("ERROR: Bigger list is not opened")
-        print(ex)
+        logging.error('Error during saving IPs to ip table: ' + str(ex.args))
+        if connection is not None:
+            connection.close()
+        print('Exiting now...')
         sys.exit(1)
-        
+    finally:
+        if connection is not None:
+            connection.close()
 
 def update_ip_data_table(data_list):
     connection = psycopg2.connect(**db_params)
@@ -65,7 +67,7 @@ def update_ip_data_table(data_list):
             for ip in ip_table:
                 if data[0] == ip[1]:
                     f_key.append(ip[0])
-                
+
     except Exception as ex:
         print("ERROR")
         print(ex)
@@ -78,7 +80,6 @@ def update_ip_data_table(data_list):
 
     for data in data_list:
             query_table2 = "INSERT INTO ip_data (ip_id, detection_day, danish_network, abuse_confidence_score, usage_type, isp, domain, country_code, total_reports, num_distinct_users, is_tor, is_whitelisted, categories, reported_at, last_reported_at, undetected, harmless, suspicious, malicious, reputation) VALUES (%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-
             cursor.execute(query_table2, data)
 
     connection.commit()
@@ -88,8 +89,12 @@ def update_ip_data_table(data_list):
 
 
 if __name__ == '__main__':
-    #global working_directory
-    #(working_directory) = get_conf()
-    from_txt = read_data_from_txt()
-    update_ip_table(from_txt)
-    update_ip_data_table(from_txt)
+    global working_directory, db_credentials
+    (working_directory, db_credentials) = get_conf()
+    
+    configure_logging()
+    
+    from_txt = read_data_from_txt() # TODO
+    
+    update_ip_table(from_txt) # DONE
+    update_ip_data_table(from_txt) # TODO
