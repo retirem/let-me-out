@@ -1,5 +1,8 @@
 import psycopg2, os, sys, logging
+
+from shutil import which
 from configparser import ConfigParser
+from subprocess import run, PIPE, CompletedProcess
 
 def get_conf() -> tuple[str, dict[str, str]]:
     conf_path: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../script.conf')
@@ -80,6 +83,20 @@ def update_ip_data_table(ip_values_with_db_ids: dict[int, list[str]]) -> None:
         print('Exiting now...')
         sys.exit(1)
 
+def check_command_availability(command: str) -> None:
+    logging.info(f'Checking for {command} command availability...')
+    if which(command) is None:
+        logging.error(f'{command} command is not available in the $PATH.')
+        sys.exit(1)
+    logging.info(f'{command} command is available.')
+
+def create_db_backup() -> None:
+    check_command_availability('pg_dump')
+    result: CompletedProcess = run(['pg_dump', 'letmeout_cyber1', '>', os.path.join(working_directory, 'db_backup.sql')], stderr=PIPE, universal_newlines=True)
+    if result.returncode != 0:
+        logging.error('An error happened during executing pg_dump command: ' + str(result.stderr))
+        print('Exiting now...')
+        sys.exit(1)
 
 if __name__ == '__main__':
     global working_directory, db_credentials
@@ -89,4 +106,5 @@ if __name__ == '__main__':
 
     ip_values_containered: list[list[str]] = read_data_from_txt()
     ip_values_with_db_ids: dict[int, list[str]] = update_ip_table(ip_values_containered=ip_values_containered)
-    update_ip_data_table(ip_values_with_db_ids=ip_values_with_db_ids) # TODO
+    update_ip_data_table(ip_values_with_db_ids=ip_values_with_db_ids)
+    create_db_backup()
