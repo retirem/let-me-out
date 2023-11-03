@@ -170,9 +170,7 @@ def export_analyzed_ips_as_txt(ips: list[IP_Info]) -> None:
 
     with open(analyzed_path, 'w') as output_file:
         for ip in ips:
-            #output_line = f"{ip.ip}|{ip.network}|{ip.virustotal['reputation']}|{ip.virustotal['harmless_count']}|{ip.virustotal['suspicious_count']}|{ip.virustotal['malicious_count']}|{ip.virustotal['undetected_count']}|{ip.abuseipdb_data['isPublic']}|{ip.abuseipdb_data['countryCode']}|{ip.abuseipdb_data['isp']}|{ip.abuseipdb_data['domain']}|{ip.abuseipdb_data['totalReports']}|{ip.abuseipdb_data['lastReportedAt']}"
             output_line = f"{ip.ip}|{detectionDay}|{ip.network}|{ip.abuseipdb_data.get('abuseConfidenceScore')}|{ip.abuseipdb_data['usageType']}|{ip.abuseipdb_data['isp']}|{ip.abuseipdb_data['domain']}|{ip.abuseipdb_data['countryCode']}|{ip.abuseipdb_data['totalReports']}|{ip.abuseipdb_data['numDistinctUsers']}|{ip.abuseipdb_data['isTor']}|{ip.abuseipdb_data['isWhitelisted']}|{ip.abuseipdb_data['report']['categories']}|{ip.abuseipdb_data['report']['reportedAt']}|{ip.abuseipdb_data['lastReportedAt']}|{ip.virustotal['undetected_count']}|{ip.virustotal['harmless_count']}|{ip.virustotal['suspicious_count']}|{ip.virustotal['malicious_count']}|{ip.virustotal['reputation']}"
-
             output_file.write(output_line + "\n")
 
     logging.info('Created text file with analyzed IPs at: ' + analyzed_path)
@@ -183,12 +181,9 @@ if __name__ == '__main__':
     (working_directory, virustotal_api_keys, abuseIPDB_api_keys) = get_conf()
     api_handler = APIHandler(virustotal_keys=virustotal_api_keys, abuseIPDB_keys=abuseIPDB_api_keys)
 
-    #configure_logging()
-    #ips: list[IP_Info] = read_ips()
-    with open('unique_blocked_ips.txt', 'r') as file:
-        ips = list(map(lambda read_ip: IP_Info(read_ip), map(lambda ip: ip.strip(), file.readlines())))
+    configure_logging()
 
+    ips: list[IP_Info] = read_ips()
     virustotal(ips=ips)
     abuseipdb(ips=ips)
-
-    #export_analyzed_ips_as_txt(ips=ips)
+    export_analyzed_ips_as_txt(ips=ips)
