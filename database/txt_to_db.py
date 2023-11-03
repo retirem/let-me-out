@@ -13,44 +13,47 @@ def configure_logging() -> None:
     handlers: list[logging.Handler] = [logging.FileHandler(filename=log_path), logging.StreamHandler(stream=sys.stdout)]
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
-file_path = '/home/letmeout/git/let-me-out/example.txt'
-
-def read_data_from_txt():
-    data_from_txt = list()
-    values = list()
+def read_data_from_txt() -> list[list[str]]:
     try:
-        with open(file_path, 'r') as file:
-            for line in file:
-                # Assuming each line contains an IP address
-                values = line.strip().split('|')
-                data_from_txt.append(values)
-        return data_from_txt
+        with open(os.path.join(working_directory, 'analyzed_ips.txt'), 'r') as file: # FIXME filename might be wrong
+            return list(map(lambda line: line.strip().split('|'), file.readlines()))
     except Exception as ex:
-        print("ERROR: In opening and importing data from the txt file.")
-        print(ex)
+        logging.error("Error during opening and reading analyzed_ips.txt: " + str(ex.args))
+        print('Exiting now...')
         sys.exit(1)
 
-def update_ip_table(data_list) -> None:
+def update_ip_table(ip_values_containered: list[list[str]]) -> dict[int, list[str]]:
+    ip_values_with_db_ids: dict[int, list[str]] = {}
     try:
         connection = psycopg2.connect(host='localhost', 
                                     database=db_credentials.get('database'),
                                     user=db_credentials.get('user'),
                                     password=db_credentials.get('password'))
-        cursor = connection.cursor()
-        query: str = 'INSERT INTO ip (ip) VALUES (%s);'
 
-        for data in data_list:
-            cursor.execute(query, (data[0],))
+        cursor = connection.cursor()
+        insert_query: str = 'INSERT INTO ip (ip) SELECT %s WHERE NOT EXISTS (SELECT 1 FROM ip WHERE ip = %s) RETURNING ip_id;'
+        id_query: str = 'SELECT ip_id FROM ip WHERE ip = %s;'
+        for ip_values in ip_values_containered:
+            cursor.execute(insert_query, (ip_values[0]))
+            id: int = cursor.fetchone()[0]
+
+            # If ip is already existing in the db, we need the id of it
+            if id is None:
+                cursor.execute(id_query, (ip_values[0]))
+                id = cursor.fetchone()[0]
+            ip_values_with_db_ids[id] = ip_values
+
         connection.commit()
+        cursor.close()
+        if connection is not None:
+            connection.close()
+        return ip_values_with_db_ids
     except Exception as ex:
         logging.error('Error during saving IPs to ip table: ' + str(ex.args))
         if connection is not None:
             connection.close()
         print('Exiting now...')
         sys.exit(1)
-    finally:
-        if connection is not None:
-            connection.close()
 
 def update_ip_data_table(data_list):
     connection = psycopg2.connect(**db_params)
@@ -91,10 +94,9 @@ def update_ip_data_table(data_list):
 if __name__ == '__main__':
     global working_directory, db_credentials
     (working_directory, db_credentials) = get_conf()
-    
+
     configure_logging()
-    
-    from_txt = read_data_from_txt() # TODO
-    
-    update_ip_table(from_txt) # DONE
+
+    ip_values_containered: list[list[str]] = read_data_from_txt()
+    ip_values_with_db_ids: dict[int, list[str]] = update_ip_table(ip_values_containered=ip_values_containered)
     update_ip_data_table(from_txt) # TODO
