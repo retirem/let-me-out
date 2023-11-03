@@ -40,10 +40,11 @@ def upload_ips_to_database(file_path, table_name):
                     values = [value if value is not None else None for value in values] + [None] * (20 - len(values))
 
 
+                    # values = [None if value == 'None' else value for value in values]
+
                     # Insert IP address and date into the specified table
                     cursor.execute(query_table1, (values[0],))
 
-                    values = [None if value == 'None' else value for value in values]
                     # Insert data into 'ip_data' table
                     cursor.execute(query_table2, (values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18] ))
 
