@@ -34,13 +34,8 @@ def upload_ips_to_database(file_path, table_name):
                     query_table1 = "INSERT INTO ip (ip) VALUES (%s)"
                     query_table2 = "INSERT INTO ip_data (detection_day, danish_network, usage_type, isp, domain, country_code, total_reports, num_distinct_users, is_tor, is_whitelisted, categories, reported_at, last_reported_at, undetected, harmless, suspicious, malicious, reputation) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-
-
-                    # Pad with None values and replace them with 'NULL'
-                    values = [value if value is not None else None for value in values] + [None] * (20 - len(values))
-
-
-                    # values = [None if value == 'None' else value for value in values]
+                    # Replaces None with Null
+                    values = [None if value == 'None' else value for value in values]
 
                     # Insert IP address and date into the specified table
                     cursor.execute(query_table1, (values[0],))
