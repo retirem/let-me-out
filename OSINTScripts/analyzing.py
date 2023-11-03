@@ -127,8 +127,8 @@ def abuseipdb(ips: list[IP_Info]) -> None:
                     report_data['reportedAt'] = report.get('reportedAt')
                     report_data['categories'] = resolve_report_categories([int(category) for category in report.get('categories')])
                 else:
-                    report_data['reportedAt'] = 'N/A'
-                    report_data['categories'] = 'N/A'
+                    report_data['reportedAt'] = 'None'
+                    report_data['categories'] = 'None'
 
                 ip.abuseipdb_data['report'] = report_data
             else:
