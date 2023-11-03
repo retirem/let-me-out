@@ -56,44 +56,29 @@ def update_ip_table(ip_values_containered: list[list[str]]) -> dict[int, list[st
         sys.exit(1)
 
 def update_ip_data_table(ip_values_with_db_ids: dict[int, list[str]]) -> None:
-    connection = psycopg2.connect(host='localhost',
-                                database=db_credentials.get('database'),
-                                user=db_credentials.get('user'),
-                                password=db_credentials.get('password'))
-    cursor = connection.cursor()
+    try:
+        connection = psycopg2.connect(host='localhost',
+                                    database=db_credentials.get('database'),
+                                    user=db_credentials.get('user'),
+                                    password=db_credentials.get('password'))
+        cursor = connection.cursor()
 
-    insert_query: str = '''INSERT INTO ip_data (ip_id, detection_day, danish_network, abuse_confidence_score, usage_type, isp, domain, country_code, total_reports, num_distinct_users, is_tor, is_whitelisted, categories, reported_at, last_reported_at, undetected, harmless, suspicious, malicious, reputation)
-                        VALUES ();'''
-    # import_ip_table = "SELECT * FROM ip;"
-    # cursor.execute(import_ip_table)
-    # ip_table = cursor.fetchall()
+        insert_query: str = '''INSERT INTO ip_data (ip_id, detection_day, danish_network, abuse_confidence_score, usage_type, isp, domain, country_code, total_reports, num_distinct_users, is_tor, is_whitelisted, categories, reported_at, last_reported_at, undetected, harmless, suspicious, malicious, reputation)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'''
 
-    # f_key = list()
+        for ip_id, ip_values in ip_values_with_db_ids.items():
+            cursor.execute(insert_query, (ip_id, *list(map(lambda value: None if value == 'None' else value, ip_values))[1:]))
 
-    # try:
-    #     for data in data_list:
-    #         for ip in ip_table:
-    #             if data[0] == ip[1]:
-    #                 f_key.append(ip[0])
-
-    # except Exception as ex:
-    #     print("ERROR")
-    #     print(ex)
-    #     sys.exit(1)
-
-    # i = 0
-    # for d in data_list:
-    #     d[0] = f_key[i]
-    #     i +=1
-
-    # for data in data_list:
-    #         query_table2 = "INSERT INTO ip_data (ip_id, detection_day, danish_network, abuse_confidence_score, usage_type, isp, domain, country_code, total_reports, num_distinct_users, is_tor, is_whitelisted, categories, reported_at, last_reported_at, undetected, harmless, suspicious, malicious, reputation) VALUES (%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    #         cursor.execute(query_table2, data)
-
-    # connection.commit()
-    # if connection:
-    #     cursor.close()
-    #     connection.close()
+        connection.commit()
+        cursor.close()
+        if connection is not None:
+            connection.close()
+    except Exception as ex:
+        logging.error('Error during saving data to ip_data table: ' + str(ex.args))
+        if connection is not None:
+            connection.close()
+        print('Exiting now...')
+        sys.exit(1)
 
 
 if __name__ == '__main__':
