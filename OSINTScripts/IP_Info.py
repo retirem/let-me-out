@@ -4,4 +4,4 @@ class IP_Info:
         self.ip: str = self.ip_address.split('/')[0]
         self.network: str = ''
         self.virustotal: dict = {}
-        self.ipqualityscore: dict = {}
+        self.abuseipdb_data: dict = {}
