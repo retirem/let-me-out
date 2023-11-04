@@ -2,7 +2,7 @@ import logging, sys, os
 
 from subprocess import PIPE, run, CompletedProcess
 from shutil import which
-from datetime import datetime
+from datetime import date
 from configparser import ConfigParser
 
 
@@ -22,7 +22,7 @@ def initialize_working_directory(directory: str) -> str:
             print('Exiting now...')
             sys.exit(1)
     print('Creating working directory for today...')
-    todays_workdir: str = os.path.join(directory, str(datetime.now().date()))
+    todays_workdir: str = os.path.join(directory, str(date.today()))
     try:
         os.mkdir(todays_workdir)
     except Exception as ex:
@@ -51,11 +51,11 @@ def configure_logging() -> None:
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
 def check_command_availability(command: str) -> None:
-    logging.info('Checking for update-ipsets command availability...')
+    logging.info(f'Checking for {command} command availability...')
     if which(command) is None:
-        logging.error('update-ipset command is not available in the $PATH, please install it from: https://github.com/firehol/blocklist-ipsets/wiki/Installing-update-ipsets.')
+        logging.error(f'{command} command is not available in the $PATH, please install it from: https://github.com/firehol/blocklist-ipsets/wiki/Installing-update-ipsets.')
         sys.exit(1)
-    logging.info('Update-ipsets command is available.')
+    logging.info(f'{command} command is available.')
 
 def update_ipsets(config_path: str) -> None:
     update_ipsets_parameters: list[str] = ['--enable-all', '--config', config_path]
