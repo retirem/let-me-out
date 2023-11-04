@@ -28,7 +28,7 @@ def read_data_from_txt() -> list[list[str]]:
 def update_ip_table(ip_values_containered: list[list[str]]) -> dict[int, list[str]]:
     ip_values_with_db_ids: dict[int, list[str]] = {}
     try:
-        connection = psycopg2.connect(host='localhost', 
+        connection = psycopg2.connect(host='localhost',
                                     database=db_credentials.get('database'),
                                     user=db_credentials.get('user'),
                                     password=db_credentials.get('password'))
@@ -37,13 +37,13 @@ def update_ip_table(ip_values_containered: list[list[str]]) -> dict[int, list[st
         insert_query: str = 'INSERT INTO ip (ip) SELECT %s WHERE NOT EXISTS (SELECT 1 FROM ip WHERE ip = %s) RETURNING ip_id;'
         id_query: str = 'SELECT ip_id FROM ip WHERE ip = %s;'
         for ip_values in ip_values_containered:
-            cursor.execute(insert_query, (ip_values[0]))
-            id: int = cursor.fetchone()[0]
+            cursor.execute(insert_query, (ip_values[0], ip_values[0],))
+            id: int = cursor.fetchone()
 
             # If ip is already existing in the db, we need the id of it
             if id is None:
-                cursor.execute(id_query, (ip_values[0]))
-                id = cursor.fetchone()[0]
+                cursor.execute(id_query, (ip_values[0],))
+                id = cursor.fetchone()
             ip_values_with_db_ids[id] = ip_values
 
         connection.commit()
@@ -92,11 +92,12 @@ def check_command_availability(command: str) -> None:
 
 def create_db_backup() -> None:
     check_command_availability('pg_dump')
-    result: CompletedProcess = run(['pg_dump', 'letmeout_cyber1', '>', os.path.join(working_directory, 'db_backup.sql')], stderr=PIPE, universal_newlines=True)
+    result: CompletedProcess = run(['pg_dump', 'letmeout_cyber1', '-f', os.path.join(working_directory, 'db_backup.sql')], stderr=PIPE, universal_newlines=True)
     if result.returncode != 0:
         logging.error('An error happened during executing pg_dump command: ' + str(result.stderr))
         print('Exiting now...')
         sys.exit(1)
+    logging.info('Created database backup in daily working directory.')
 
 if __name__ == '__main__':
     global working_directory, db_credentials
