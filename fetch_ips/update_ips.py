@@ -51,11 +51,11 @@ def configure_logging() -> None:
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
 def check_command_availability(command: str) -> None:
-    logging.info('Checking for update-ipsets command availability...')
+    logging.info(f'Checking for {command} command availability...')
     if which(command) is None:
-        logging.error('update-ipset command is not available in the $PATH, please install it from: https://github.com/firehol/blocklist-ipsets/wiki/Installing-update-ipsets.')
+        logging.error(f'{command} command is not available in the $PATH, please install it from: https://github.com/firehol/blocklist-ipsets/wiki/Installing-update-ipsets.')
         sys.exit(1)
-    logging.info('Update-ipsets command is available.')
+    logging.info(f'{command} command is available.')
 
 def update_ipsets(config_path: str) -> None:
     update_ipsets_parameters: list[str] = ['--enable-all', '--config', config_path]
