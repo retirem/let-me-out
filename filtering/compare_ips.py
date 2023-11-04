@@ -118,30 +118,6 @@ def filtering(ip_addresses: list, subnets: list, networks: list) -> set[tuple[IP
         print(ex)    
         sys.exit(1)
 
-def previous_blocked() -> list[str]|None:
-    yesterdays_path: str = os.path.join(root_working_directory, str(date.today() - timedelta(days=1)))
-    if os.path.exists(yesterdays_path):
-        with open(os.path.join(yesterdays_path, 'blocked_ips_networks.txt')) as prev_blocked_file:
-            return prev_blocked_file.readlines()
-    else:
-        return None
-
-def create_daily_delta(filtered: set[tuple[IPv4Address|IPv4Network, IPv4Network]]) -> None:
-    appeared: list[str] = []
-    deleted: list[str] = []
-    todays_blocked: list[str] = [str(element[0]) for element in filtered]
-
-    if (prev_blocked := previous_blocked()):
-        appeared = [address for address in todays_blocked if address not in prev_blocked]
-        deleted = [address for address in prev_blocked if address not in todays_blocked]
-    else:
-        appeared = deleted = todays_blocked
-
-    with open(os.path.join(working_directory, 'delta_appeared.txt')) as appeared_file:
-        appeared_file.writelines('\n'.join(appeared))
-
-    with open(os.path.join(working_directory, 'delta_deleted.txt')) as deleted_file:
-        deleted_file.writelines('\n'.join(deleted))
 
 if __name__ == "__main__":
     global root_working_directory, working_directory
@@ -152,5 +128,3 @@ if __name__ == "__main__":
     blocked = blocked_ips()
     subnets = danish_subnets()
     filtered: set[tuple[IPv4Address|IPv4Network, IPv4Network]] = filtering(ip_addresses=blocked[0], subnets=subnets, networks=blocked[1])
-
-    create_daily_delta(filtered=filtered)
