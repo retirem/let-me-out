@@ -2,6 +2,8 @@
 
 set -e
 
+cd /home/letmeout/git/let-me-out/
+echo "It should run smoothly :)">/tmp/Starting.txt
 # Fetching all the blocked IPs from Firehol
 python /home/letmeout/git/let-me-out/fetch_ips/update_ips.py
 echo "Fetching done"> /tmp/fetching.txt
