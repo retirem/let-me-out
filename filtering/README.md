@@ -5,22 +5,15 @@ Make sure that the following python packages are properly installed and updated.
 ipaddress, argparse, sys
 
 # Filter Danish IPs and networks
-## compare_ips.py USAGE:
 
 ```sh
-usage: compare_ips.py [-h] --blocklist BLOCKLIST --networks NETWORKS
+usage: python compare_ips.py
 
 Filtering IPs and networks from File1 based on the networks specified in File2.
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --blocklist BLOCKLIST
-                        The .txt file containing the blocklisted IPs.
-  --networks NETWORKS   The .txt file containing the chosen country's networks.
-```
-### Example
 ```sh
-python compare_ips.py --blocklist file1.txt --networks file2.txt
+python compare_ips.py
+OUTPUT: unique_blocked_ips.txt and blocked_networks.txt
 ```
 
 ## Troubleshooting
