@@ -20,7 +20,7 @@ def configure_logging() -> None:
     logging.basicConfig(format='%(asctime)s, %(levelname)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', encoding='utf-8', level=logging.DEBUG, handlers=handlers)
 
 def read_ips() -> list[IP_Info]:
-    ip_path: str = os.path.join(working_directory, 'blocked_ips_networks.txt')
+    ip_path: str = os.path.join(working_directory, 'unique_blocked_ips.txt')
     logging.info('Reading IPs from file: ' + ip_path)
     with open(ip_path, 'r') as ip_file:
         return list(map(lambda read_ip: IP_Info(read_ip), map(lambda ip: ip.strip(), ip_file.readlines())))
