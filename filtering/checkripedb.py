@@ -12,7 +12,7 @@ def get_conf() -> str:
 
 def NETcheck_ripe_database():
     input_net_filename: str = os.path.join(working_directory, 'blocked_networks.txt')
-
+    print("[+]Starting to check networks country according to RIPE DB...")
     try:
         with open(input_net_filename, "r") as file:
             netw = file.read().splitlines()
@@ -36,6 +36,7 @@ def NETcheck_ripe_database():
                 output.write(f"Number of networks are not Danish according to RIPE NCC (RIPE DB)\n{str(net_not_danish_byRIPEdb)}" + "\n")
                 for net in net_not_danish:
                     output.write(net + "\n")
+            print("[+] Network check finished.")
         except Exception as ex:
             print("[-] Failed to send requests (containing blocked networks) to the RIPE DB.")
             print(ex)
@@ -49,7 +50,7 @@ def NETcheck_ripe_database():
 
 def IPcheck_ripe_database():
     input_ip_filename: str = os.path.join(working_directory, 'unique_blocked_ips.txt')
-    
+    print("[+]Starting to check IPs country according to RIPE DB...")
     try:
         with open(input_ip_filename, "r") as file:
             ips = file.read().splitlines()
@@ -76,7 +77,7 @@ def IPcheck_ripe_database():
                 output.write(f"Number of IPs are not Danish according to RIPE NCC (RIPE DB):\n{str(ip_not_danish_byRIPEdb)}" + "\n")
                 for ip in ip_not_danish:
                     output.write(ip + "\n")
-
+            print("[+] IP check finished.")
         except Exception as ex:
             print("[-] Failed to send requests (containing blocked IPs) to the RIPE DB.")
             print(ex)
@@ -94,5 +95,6 @@ if __name__ == "__main__":
 
     IPcheck_ripe_database()
     NETcheck_ripe_database()
+    print("\nScript finished sucessfully!\n")
     
 
