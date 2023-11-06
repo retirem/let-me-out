@@ -12,7 +12,7 @@ python /home/letmeout/git/let-me-out/filtering/compare_ips.py
 python /home/letmeout/git/let-me-out/OSINTScripts/analyzing.py
 
 #Run the ripecheck script
-#python /home/letmeout/git/let-me-out/filtering/checkripedb.py
+python /home/letmeout/git/let-me-out/filtering/checkripedb.py
 
 # Upload data to the database
 python /home/letmeout/git/let-me-out/database/txt_to_db.py
