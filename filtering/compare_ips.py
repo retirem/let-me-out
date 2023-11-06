@@ -12,6 +12,7 @@ def get_conf() -> tuple[str, str]:
     return (config_parser.get('CONFIGS', 'workdir'),
             config_parser.get('CONFIGS', 'workdir_todays'))
 
+
 def blocked_ips():
     blocklist_path: str = os.path.join(working_directory, 'aggregated_iplists.txt')
     try:
@@ -46,6 +47,7 @@ def blocked_ips():
         print("[-] Unable to open the "+ blocklist_path + " file.")
         print(ex)
         sys.exit(1)
+
 
 def danish_subnets():
     network_path: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'danish_networks.txt')
