@@ -1,0 +1,6 @@
+80.209.87.103 - electroncash.dk - (onion domain on website and btc adress aswell, kinda suspecious)
+176.23.0.177 - smartstreaming.tv (IP streaming service)
+82.103.131.250 - asergo.com (Hosting company, has one of their IPs on the blocklist )
+5.56.157.253 - oens.dk (Large entrepreneur based in Amager, reported multiple times in abuseIPDB)
+130.225.39.160 - Forskningsnettet AAU (Network which is associated with both AAU and DTU)
+130.225.244.90 - Forskningsnettet DTU - Tor node
