@@ -1,0 +1,26 @@
+
+
+List of through investigation:
+    130.225.0.0/16      Danmarks Tekniske Universitet
+    193.3.192.0/19      Styrelsen for Arbejdsmarked og Rekruttering
+    193.163.80.0/22     Trafikstyrelsen
+
+
+
+
+
+
+
+
+
+
+
+All the interesting ones (I have found):
+    193.162.176.0/20    Styrelsen for Arbejdsmarked og Rekruttering
+    193.162.168.0/21    Styrelsen for Arbejdsmarked og Rekruttering
+    193.162.120.0/21    Styrelsen for Arbejdsmarked og Rekruttering
+    82.211.192.0/19     K-Net Forening
+    5.44.136.0/21       Netcompany A/S
+    192.66.104.0/21     Esbjerg Kommune
+        192.66.112.0/22     Esbjerg Kommune
+        192.66.100.0/22     Esbjerg Kommune
