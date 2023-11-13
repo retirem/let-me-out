@@ -1,3 +1,13 @@
+#Interesting networks
+192.66.116.0/24 -- (https://dnslytics.com/ip/192.66.116.1)  Cargo Center Copenhagen A/S, Copenhagen Airport
+
+
+
+
+
+
+#UNIQUE IPS
+
 **IP:** 89.188.76.74 (https://www.shodan.io/host/89.188.76.74)
     
     - **Location:** Copenhagen, Denmark
