@@ -1,0 +1,21 @@
+**IP:** 89.188.76.74 (https://www.shodan.io/host/89.188.76.74)
+    
+    - **Location:** Copenhagen, Denmark
+    - **ISP:** team.blue Denmark A/S
+    - **Organization:** ZITCOM A/S
+    - **Operating System:** Ubuntu
+    - **Ports:** 80, 8080, 22
+    - **Vulnerabilities:** CVE-2021-23017, CVE-2021-3618
+    
+    This IP is associated with the domain "basicserver.io" and is hosting a server running nginx/1.18.0 (Ubuntu) on ports 80 and 8080.
+    
+    HYPOTESIS: **Security Vulnerabilities:** If the server is running outdated software with known security vulnerabilities, it could be targeted by attackers, leading to its inclusion in a blacklist.
+
+1. **46.30.213.77:** This IP is associated with the domain "logistikprojekt.se" and "webcluster1.webpod13-cph3.one.com." It is located in Copenhagen, Denmark, and is operated by One.com A/S. The server is running Apache with PHP/8.0.30. (https://www.shodan.io/host/46.30.213.77)
+    
+2. **185.20.205.41:** This IP is associated with the domains "unoeuro.com" and "simply.com." It is also located in Copenhagen, Denmark, and is operated by team.blue Denmark A/S. The server is running Apache with PHP/8.0.30. (https://www.shodan.io/host/185.20.205.41). ![[Pasted image 20231113104020.png]]
+He comprobado en todos lados estas últimas dos IPs pero no parece que sea :
+- Policy Violations: The IP address or associated domain may have violated the terms of service of a security provider, leading to blacklisting. 
+- Spam Reports: Reports of spam or unsolicited emails originating from that IP address could result in its inclusion in email blacklists.
+
+Mi hipótesis es que unoeuro.com (no longer avalaible hizo cosas feas)
