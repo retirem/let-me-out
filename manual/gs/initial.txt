@@ -24,3 +24,11 @@ All the interesting ones (I have found):
     192.66.104.0/21     Esbjerg Kommune
         192.66.112.0/22     Esbjerg Kommune
         192.66.100.0/22     Esbjerg Kommune
+
+    217.198.212.162     Norlys Fibernet A/S: cve:"CVE-2023-26801" attempt
+    188.179.73.78       TDC Holding A/S: cve:"CVE-2023-26801" attempt
+    195.231.166.72      Styrelsen for IT og Laering: 
+    212.242.70.131      Tue Kempf
+    194.28.252.65       Fagbevaegelsens Hovedorganisation
+    94.18.244.94        Customer Network - Static Assigned
+    91.189.201.70      Enkeltmandsvirksomhed Netvaerkssmeden
