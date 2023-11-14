@@ -52,9 +52,14 @@ All the interesting ones (I have found):
         https://thatsthem.com/ip/195.231.166.72
         https://www.iplocation.net/ip-lookup?query=195.231.166.72&submit=IP+Lookup
         https://mxtoolbox.com/SuperTool.aspx?action=blacklist%3a195.231.166.72&run=toolpage
-        
+
 
     212.242.70.131      Tue Kempf, kempf.dk: one.com create your own website
+        https://thatsthem.com/ip/212.242.70.131
+        https://www.iplocation.net/ip-lookup?query=212.242.70.131&submit=IP+Lookup
+        https://mxtoolbox.com/SuperTool.aspx?action=blacklist%3a212.242.70.131&run=toolpage
+
+
     194.28.252.65       Fagbevaegelsens Hovedorganisation
-    94.18.244.94        Customer Network - Static Assigned, City: Herning
-    91.189.201.70      Enkeltmandsvirksomhed Netvaerkssmeden
+        https://thatsthem.com/ip/194.28.252.65
+        https://www.iplocation.net/ip-lookup?query=194.28.252.65&submit=IP+Lookup
