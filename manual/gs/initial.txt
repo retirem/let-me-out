@@ -48,7 +48,12 @@ All the interesting ones (I have found):
         https://www.virustotal.com/gui/ip-address/188.179.73.78/details
         https://www.abuseipdb.com/check/188.179.73.78
 
-    195.231.166.72      Styrelsen for IT og Laering: 
+    195.231.166.72      Styrelsen for IT og Laering:
+        https://thatsthem.com/ip/195.231.166.72
+        https://www.iplocation.net/ip-lookup?query=195.231.166.72&submit=IP+Lookup
+        https://mxtoolbox.com/SuperTool.aspx?action=blacklist%3a195.231.166.72&run=toolpage
+        
+
     212.242.70.131      Tue Kempf, kempf.dk: one.com create your own website
     194.28.252.65       Fagbevaegelsens Hovedorganisation
     94.18.244.94        Customer Network - Static Assigned, City: Herning
