@@ -1,0 +1,26 @@
+195.137.236.117 
+Mermaid Consulting ApS
+person: Jens Kristian Soegaard
+address: Carl Klitgaards Vej 15 st tv
+address: 9400 Noerresundby
+address: DK
+e-mail: jens@mermaidconsulting.dk
+phone: +45 70 20 14 17
+fax-no: +45 96 32 09 17
+
+152.115.132.234
+GlobalConnect A/S
+address: Havneholmen 6
+address: DK-2450 Copenhagen SV
+address: Denmark
+e-mail: ripencc@globalconnect.dk
+
+130.225.244.90
+Danmarks Tekniske Universitet
+address: DTU Asmussens Alle, Building 305, 2nd Floor
+address: 2800
+address: Kgs.Lyngby
+address: DENMARK
+phone: +4535888222
+fax-no: +4535888201
+
