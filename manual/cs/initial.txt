@@ -24,3 +24,11 @@ address: DENMARK
 phone: +4535888222
 fax-no: +4535888201
 
+62.107.169.213
+Stofa A/S (Cable operator)
+address: Slet Parkvej 5-7
+address: DK-8310 Tranbjerg
+address: Denmark
+phone: +45 88 30 30 30
+fax-no: +45 88 13 15 56
+e-mail: peering@stofa.dk
