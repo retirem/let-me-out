@@ -32,3 +32,12 @@ address: Denmark
 phone: +45 88 30 30 30
 fax-no: +45 88 13 15 56
 e-mail: peering@stofa.dk
+
+62.243.45.227
+It Relation A-S
+address: Virkelyst 82
+address: 7400 Herning
+address: DK
+phone: +45 20696701
+
+
