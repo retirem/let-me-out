@@ -1,12 +1,15 @@
-195.137.236.117 
-Mermaid Consulting ApS
-person: Jens Kristian Soegaard
-address: Carl Klitgaards Vej 15 st tv
-address: 9400 Noerresundby
-address: DK
-e-mail: jens@mermaidconsulting.dk
-phone: +45 70 20 14 17
-fax-no: +45 96 32 09 17
+217.116.232.223 
+Hostnames:               web23.gigahost.dk
+City:                    Copenhagen
+Country:                 Denmark
+Organization:            Gigahost ApS
+Updated:                 2023-11-23T07:29:44.580877
+Number of open ports:    3
+
+Ports:
+     21/tcp  
+     80/tcp Apache httpd 
+    123/udp  
 
 152.115.132.234
 GlobalConnect A/S
@@ -44,20 +47,33 @@ Ports:
                 Generator:     2
                 Fingerprint:   mod_ssl 2.2.x/Hardcoded 1024-bit prime
    9030/tcp 
-62.107.169.213
-Stofa A/S (Cable operator)
-address: Slet Parkvej 5-7
-address: DK-8310 Tranbjerg
-address: Denmark
-phone: +45 88 30 30 30
-fax-no: +45 88 13 15 56
-e-mail: peering@stofa.dk
 
-62.243.45.227
-It Relation A-S
-address: Virkelyst 82
-address: 7400 Herning
-address: DK
-phone: +45 20696701
+78.156.123.210
+City:                    Copenhagen
+Country:                 Denmark
+Organization:            Norlys Fibernet A/S
+Updated:                 2023-11-21T21:42:04.633698
+Number of open ports:    10
+Vulnerabilities:         CVE-2022-4450  CVE-2023-0466   CVE-2023-2650   CVE-2023-0286   CVE-2023-3817      CVE-2023-4807   CVE-2023-0215   CVE-2023-0464   CVE-2023-0465   CVE-2022-4304
+Ports:
+     21/tcp BSD ftpd (6.00LS)
+     22/tcp OpenSSH (9.1)
+     25/tcp Sendmail 
+     53/tcp  
+     53/udp  
+     80/tcp Apache httpd (2.4.58)
+    110/tcp  
+        |-- SSL Versions: -SSLv2, -SSLv3, -TLSv1.1, -TLSv1.2, TLSv1
+    143/tcp UW imapd (2007f.404)
+        |-- SSL Versions: -SSLv2, -SSLv3, -TLSv1.1, -TLSv1.2, TLSv1
+    443/tcp Apache httpd (2.4.58)
+        |-- SSL Versions: -SSLv2, -SSLv3, TLSv1, TLSv1.1, TLSv1.2, TLSv1.3
+        |-- Diffie-Hellman Parameters:
+                Bits:          3072
+                Generator:     2
+                Fingerprint:   RFC3526/Oakley Group 15
+    587/tcp Sendmail 
+    873/tcp  
+
 
 
