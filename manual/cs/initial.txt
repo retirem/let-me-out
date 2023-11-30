@@ -4,12 +4,16 @@ City:                    Copenhagen
 Country:                 Denmark
 Organization:            Gigahost ApS
 Updated:                 2023-11-23T07:29:44.580877
+ISP: Sentia Denmark A/S
 Number of open ports:    3
 
 Ports:
      21/tcp  
      80/tcp Apache httpd 
     123/udp  
+
+Reported 1yr ago in Indonesia as Phishing site. Phishing, Email phishing, Exploit host
+
 
 152.115.132.234
 GlobalConnect A/S
@@ -26,6 +30,7 @@ Ports:
                 Bits:          1024
                 Generator:     2
                 Fingerprint:   RFC2409/Oakley Group 2
+
 
 130.225.244.90
 Danmarks Tekniske Universitet
@@ -47,6 +52,8 @@ Ports:
                 Generator:     2
                 Fingerprint:   mod_ssl 2.2.x/Hardcoded 1024-bit prime
    9030/tcp 
+Blacklists: DAN TOR, s5h.net
+
 
 78.156.123.210
 City:                    Copenhagen
