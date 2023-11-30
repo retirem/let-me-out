@@ -30,6 +30,7 @@ Ports:
                 Bits:          1024
                 Generator:     2
                 Fingerprint:   RFC2409/Oakley Group 2
+VPN
 
 
 130.225.244.90
