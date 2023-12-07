@@ -1,0 +1,8 @@
+Things to further analyze: 
+- The most network prefix on blocklist M
+- The sudden drop off on november 23 M
+- Look into the ones that got on, off and on again M
+- - Look at the 26 IP's that got off the blocklist after one day
+- The most reported IPs that are not TOR S
+- Look at the top 5 most reported IPs (Could be TOR), investigate them further. S
+- Look into the N/A category of Usage type (take small handfull of those and look C
