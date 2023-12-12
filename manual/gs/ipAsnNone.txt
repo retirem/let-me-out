@@ -1,0 +1,26 @@
+isp (Sheet1)	Ip
+TDC holding A/S	90.184.36.127
+TDC holding A/S	90.185.108.233
+TDC holding A/S	90.184.97.140
+TDC holding A/S	90.184.73.47
+TDC holding A/S	90.184.230.106
+TDC holding A/S	90.185.96.72
+	85.236.119.211
+TDC holding A/S	90.185.249.111
+TDC holding A/S	90.184.203.249
+TDC holding A/S	90.184.19.180
+TDC holding A/S	90.185.167.212
+	158.173.205.14
+TDC holding A/S	87.58.114.113
+TDC holding A/S	90.185.166.43
+TDC holding A/S	87.56.106.159
+TDC holding A/S	90.184.23.208
+TDC holding A/S	87.56.107.119
+TDC holding A/S	90.185.70.224
+	194.28.252.65
+TDC holding A/S	90.185.131.131
+TDC holding A/S	90.184.182.201
+TDC holding A/S	90.184.122.91
+TDC holding A/S	128.77.8.214
+TDC holding A/S	87.58.125.189
+TDC holding A/S	90.185.212.17
