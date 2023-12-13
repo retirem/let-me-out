@@ -1,0 +1,16 @@
+ - stopforumspam90d
+ - stopforumspam180d
+ - stopforumspam365d
+
+ These ip bloklists from https://stopforumspam.com were not access by FireHOL since Nov. 23.
+
+ Precisely, on Nov. 23 the stopforumspam90d were still accessed, but not the others, and from 
+ 24th none of them were accessed.
+
+ I checked, and today (dec. 13.) manually I could retrieve these blocklists, so it is unknown what could be the problem.
+
+ In our script we use the --enable-all option with the update-ipsets command, which
+ should update all ipsets as well, and we did not modified the FireHOL git repo since we started, so the reason is unknown.
+
+I checked and those roughly 200 IP addresses that come from these blocklists were presented the day before Nov. 23,
+but were not presented 2 days after, so 98% this is the cause for the drop in IP numbers.
