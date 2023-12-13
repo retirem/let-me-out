@@ -1,0 +1,30 @@
+- 26 ips
+- - 10 ips that stayed on for 1 day where chaught for port scanning they were data centers, web hosting and transit we think its web hosting 
+- - 3 other didnt show any different signs than other ones besides the ones that jumped on and of
+-
+- - maybe we can say that these top 10 are run by bigger organisations for different purposes because the bottom 2 
+- - we see that all of them are reported for scanning or brute force attacks this can be more easy to detect. 
+- - we saw the flaw of community soures with virustotal
+
+- 200 ips of the blocklist after 23th
+- - firehol couldnt get 3 blocklists after that day 
+- - you can still get them from the websites
+- - - Maybe they changed API's or something else so firehol's automation couldnt access it anymore
+- - - From the website the download limits says 2 maximum
+- - - They changed something in the original form of the blocklists that prohibited firehol from converting it to their own format (Speculations) 
+- - - firehol could have not wanted to include it anymore
+- 13 ips
+- - 12/13 proxy connections, reported for bruteforce ssh, email spam webspam. 
+- - Most of them were tdc holdings
+- rifat 9 ips
+- - Brute force spam 
+- gery 29 prefix
+- - Didnt find anything about it
+- - Think its because they dont want to block the big networks to minimize damages
+- gery tor
+- - one guy/companny zencurity only one employee
+- - - almost 10 or twelve ips that maintain tor nodes
+- - - guy in the education sector and is an expert
+- - - maybe they are used for education and they are also lended to an src a non profit org most of the employees there are students or younger people-
+- - its obvious that tor are the actual top reported ones because they are used often for malicious purposes 
+- - 
