@@ -1,0 +1,9 @@
+Top 10 reported Tor IPS:
+The most reported Tor IP addresses belong to an organization called Zencurity Aps, which is a one employee company, maneging an ASN. The owner (and the only employee as well) is a cybersecurity porfessional, who is teaching cyber security at KEA education center. Through this company he is lending IP addresses to dotsrc, which is a smaller (probably research) company with a Tor related project. The project is sponsored by Aalborg University as well. The Zencurity Aps has it's own IP addresses for Tor projects too.
+So basically Zencuity is a one man stand company, maintaining an ASN. The malicious IPs are part of that ASN, and right now seems like to assigned to a dotsrc organization (a few stuff member were AAU students), which is maintaining tor nodes on these addresses. Other than that the other Zencurity IP addresses are also tor nodes, however seems like not part of the dotsrc poject. The owner of this company is a cyber security specialist, with github repo, teaching at a Danish IT school as well.
+According to (https://metrics.torproject.org/rs.html#search/flag:exit%20country:dk%20) our found IPS are the majority of Denmarks Tor exit nodes (basically 13 out of 16).
+
+Why /29 is the most blocked network range?
+ASSUMPTIONS:
+The ISPs assign for regular users IP addresses in /29 networks for effectiveness.
+Blocklist maintainers want to ban as least not malicious IPs as they can.
