@@ -88,4 +88,4 @@ TOR servers:
 5.206.194.9
 84.238.23.220
 84.238.43.174
-
+https://docs.google.com/spreadsheets/d/1gi3q5lRCc3Ln1YOfYGvq6HfEC1UbeMdbN1EFTu-3GoE/edit?usp=sharing
